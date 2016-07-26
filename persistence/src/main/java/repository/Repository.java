@@ -11,4 +11,6 @@ public interface Repository<ObjectType, ObjectId extends Long> {
     Optional<ObjectType> findOne(ObjectId id);
 
     Collection<ObjectType> findAll();
+
+    void delete(ObjectId id);
 }

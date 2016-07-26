@@ -15,6 +15,8 @@ import service.InvalidUserDataException;
 import service.UserService;
 import service.impl.dto.UserDto;
 
+import java.util.Collection;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -100,6 +102,26 @@ public class UserServiceImpl implements UserService {
                 + username.getUsername() + "'.");
         }
         throw new AuthenticationException();
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        userRepository.delete(id);
+    }
+
+    @Override
+    public Collection<User> getAllRegisteredUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public void terminateAuthentication(AuthenticationToken token) {
+        userAuthenticationRepository.deleteByToken(token);
+    }
+
+    @Override
+    public Collection<AuthenticatedUser> getAllAuthenticatedUsers() {
+        return userAuthenticationRepository.findAll();
     }
 
     @Override

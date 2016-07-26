@@ -3,6 +3,7 @@ package service;
 import entity.AuthenticationToken;
 import entity.tiny.UserName;
 import entity.tiny.UserPassword;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import service.impl.UserServiceImpl;
@@ -15,35 +16,45 @@ public class UserServiceShould {
 
     private final UserService userService = UserServiceImpl.getInstance();
 
+    private final UserDto user = new UserDto("vasya", "123", "123");
+
+    private Long userId;
+
+    @Before
+    public void before() throws InvalidUserDataException {
+        if (userService.getAllAuthenticatedUsers().size() > 0
+                || userService.getAllRegisteredUsers().size() > 0) {
+            fail("Repositories have to be empty.");
+        }
+        userId = userService.registerUser(user);
+    }
+
+    @After
+    public void after() {
+        userService.deleteUser(userId);
+    }
+
     @Test
     public void registerUser() throws InvalidUserDataException {
-
-        final UserDto user = new UserDto("vasya", "123", "123");
-
-        final Long userId = userService.registerUser(user);
-
         assertEquals("Failed user registration.", true, userService.isUserRegistered(userId));
     }
 
     @Test
     public void authenticateUser() throws AuthenticationException, InvalidUserDataException {
-        final UserDto user = new UserDto("petya", "123", "123");
-
-        final Long userId = userService.registerUser(user);
-
         final AuthenticationToken token = userService.login(
                 new UserName(user.getUsername()),
                 new UserPassword(user.getPassword()));
 
-        assertEquals("Failed user authentication",
-                true, userService.isUserAuthenticated(userId, token));
+        boolean actual = userService.isUserAuthenticated(userId, token);
+
+        userService.terminateAuthentication(token);
+
+        assertEquals("Failed user authentication", true, actual);
     }
 
     @Test(expected = InvalidUserDataException.class)
     public void notRegisterDuplicatedUser() throws InvalidUserDataException {
-        final UserDto user = new UserDto("masha", "123", "123");
 
-        userService.registerUser(user);
         userService.registerUser(user);
 
         fail("Expected InvalidUserDataException.");

@@ -35,5 +35,10 @@ public abstract class InMemoryRepository
         return entries.values();
     }
 
+    @Override
+    public void delete(ObjectId objectId) {
+        entries.remove(objectId);
+    }
+
     protected abstract ObjectId nextId();
 }

@@ -1,8 +1,11 @@
 package repository;
 
 import com.google.common.base.Optional;
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import entity.AuthenticatedUser;
 import entity.AuthenticationToken;
+
+import java.util.Iterator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -32,6 +35,24 @@ public class UserAuthenticationRepository extends InMemoryRepository<Authenticat
             }
         }
         return Optional.absent();
+    }
+
+    public void deleteByToken(AuthenticationToken token) {
+        checkNotNull(token, "Token cannot be null.");
+
+        boolean isRemoved = false;
+        Iterator<AuthenticatedUser> iter = entries.values().iterator();
+        while(iter.hasNext()) {
+            if (iter.next().getToken().equals(token)) {
+                iter.remove();
+                isRemoved = true;
+                break;
+            }
+        }
+        if (!isRemoved) {
+            throw new IllegalArgumentException("User with token = '"
+                    + token.getToken() + "' does not authenticated.");
+        }
     }
 
     public static UserAuthenticationRepository getInstance() {
