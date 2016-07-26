@@ -9,9 +9,9 @@ public interface UserService {
 
     long registerUser(UserDto user) throws InvalidUserDataException;
 
-    boolean isUserRegistered(long id);
+    boolean isUserRegistered(Long id);
 
     AuthenticationToken login(UserName username, UserPassword password) throws AuthenticationException;
 
-    boolean isUserAuthenticated(long id, AuthenticationToken token);
+    boolean isUserAuthenticated(Long id, AuthenticationToken token);
 }

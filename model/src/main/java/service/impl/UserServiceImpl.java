@@ -70,14 +70,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isUserRegistered(long id) {
+    public boolean isUserRegistered(Long id) {
         checkArgument(id > -1, "Id cannot be negative.");
 
-        return userRepository.findOne(new Long(id)).isPresent();
+        return userRepository.findOne(id).isPresent();
     }
 
     @Override
-    public boolean isUserAuthenticated(long userId, AuthenticationToken token) {
+    public boolean isUserAuthenticated(Long userId, AuthenticationToken token) {
 
         checkArgument(userId > -1, "Id cannot be negative.");
         checkNotNull(token, "Token cannot be null");
