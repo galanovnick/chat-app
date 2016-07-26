@@ -5,10 +5,10 @@ import entity.tiny.UserName;
 public class AuthenticatedUser implements Entry<Long> {
 
     private Long id;
-    private String token;
+    private AuthenticationToken token;
     private UserName username;
 
-    public AuthenticatedUser(Long id, String token, UserName username) {
+    public AuthenticatedUser(Long id, AuthenticationToken token, UserName username) {
         this.id = id;
         this.token = token;
         this.username = username;
@@ -24,11 +24,11 @@ public class AuthenticatedUser implements Entry<Long> {
         this.id = id;
     }
 
-    public String getToken() {
+    public AuthenticationToken getToken() {
         return token;
     }
 
-    public void setToken(String token) {
+    public void setToken(AuthenticationToken token) {
         this.token = token;
     }
 

@@ -2,10 +2,16 @@ package service;
 
 import entity.AuthenticationToken;
 import entity.User;
+import entity.tiny.UserName;
+import entity.tiny.UserPassword;
 
 public interface UserService {
 
     long registerUser(User user) throws InvalidUserDataException;
 
-    AuthenticationToken login(String username, String password) throws AuthenticationException;
+    boolean isUserRegistered(long id);
+
+    AuthenticationToken login(UserName username, UserPassword password) throws AuthenticationException;
+
+    boolean isUserAuthenticated(long id, AuthenticationToken token);
 }
