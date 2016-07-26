@@ -6,6 +6,8 @@ import entity.AuthenticationToken;
 import entity.User;
 import entity.tiny.UserName;
 import entity.tiny.UserPassword;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repository.UserAuthenticationRepository;
 import repository.UserRepository;
 import service.AuthenticationException;
@@ -18,6 +20,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class UserServiceImpl implements UserService {
 
+    private final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+
     private static UserServiceImpl instance;
 
     private final UserRepository userRepository = UserRepository.getInstance();
@@ -27,20 +31,43 @@ public class UserServiceImpl implements UserService {
     @Override
     public long registerUser(UserDto user) throws InvalidUserDataException {
         checkNotNull(user, "User dto cannot be null.");
+
+        if (log.isDebugEnabled()) {
+            log.debug("Trying to register user with name ='" + user.getUsername() + "'...");
+        }
+
         if (user.getUsername().equals("")
                 || user.getPassword().equals("")
                 || user.getPasswordConfirm().equals("")) {
+            if (log.isDebugEnabled()) {
+                log.debug("Failed attempt to register user with name = '" + user.getUsername()
+                        + "'. Reason: empty fields.");
+            }
             throw new InvalidUserDataException("Fields cannot be empty.");
         }
         if (!user.getPassword().equals(user.getPasswordConfirm())) {
+            if (log.isDebugEnabled()) {
+                log.debug("Failed attempt to register user with name = '" + user.getUsername()
+                        + "'. Reason: different passwords.");
+            }
             throw new InvalidUserDataException("Password do not match.");
         }
         if (userRepository.getUserByUsername(new UserName(user.getUsername())).isPresent()) {
+            if (log.isDebugEnabled()) {
+                log.debug("Failed attempt to register user with name = '" + user.getUsername()
+                        + "'. Reason: user already exists.");
+            }
             throw new InvalidUserDataException("User with such name already exists.");
         }
-        return userRepository.insert(
+        final Long resId = userRepository.insert(
                 new User(new UserName(user.getUsername()),
                         new UserPassword(user.getPassword())));
+
+        if (log.isDebugEnabled()) {
+            log.debug("User with name = '" + user.getUsername() + "' successfully registered.");
+        }
+
+        return resId;
     }
 
     @Override
@@ -50,23 +77,29 @@ public class UserServiceImpl implements UserService {
         checkNotNull(username, "Username cannot be null");
         checkNotNull(password, "Password cannot be null");
 
+        if (log.isDebugEnabled()) {
+            log.debug("Trying to authenticated user with username = '"
+                    + username.getUsername() + "'...");
+        }
+
         Optional<User> user = userRepository.getUserByUsername(username);
 
         if (user.isPresent() && user.get().getPassword().equals(password)) {
             AuthenticationToken token = new AuthenticationToken(username.getUsername());
             AuthenticatedUser authenticatedUser = new AuthenticatedUser(token, user.get().getId());
             userAuthenticationRepository.insert(authenticatedUser);
+            if (log.isDebugEnabled()) {
+                log.debug("User with username = '"
+                        + username.getUsername() + "' successfully authenticated.");
+            }
             return token;
         }
 
-        throw new AuthenticationException();
-    }
-
-    public static UserServiceImpl getInstance() {
-        if (instance == null) {
-            return instance = new UserServiceImpl();
+        if (log.isDebugEnabled()) {
+            log.debug("Failed attempt to authenticate user with username = '"
+                + username.getUsername() + "'.");
         }
-        return instance;
+        throw new AuthenticationException();
     }
 
     @Override
@@ -91,4 +124,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserServiceImpl(){}
+
+    public static UserServiceImpl getInstance() {
+        if (instance == null) {
+            return instance = new UserServiceImpl();
+        }
+        return instance;
+    }
 }

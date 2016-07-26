@@ -9,6 +9,7 @@ import service.impl.UserServiceImpl;
 import service.impl.dto.UserDto;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class UserServiceShould {
 
@@ -36,5 +37,24 @@ public class UserServiceShould {
 
         assertEquals("Failed user authentication",
                 true, userService.isUserAuthenticated(userId, token));
+    }
+
+    @Test(expected = InvalidUserDataException.class)
+    public void notRegisterDuplicatedUser() throws InvalidUserDataException {
+        final UserDto user = new UserDto("masha", "123", "123");
+
+        userService.registerUser(user);
+        userService.registerUser(user);
+
+        fail("Expected InvalidUserDataException.");
+    }
+
+    @Test(expected = InvalidUserDataException.class)
+    public void notRegisterUserWithDifferentPasswords() throws InvalidUserDataException {
+        final UserDto user = new UserDto("user", "123", "321");
+
+        userService.registerUser(user);
+
+        fail("Expected InvalidUserDataException.");
     }
 }
