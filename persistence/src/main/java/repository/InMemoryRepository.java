@@ -13,7 +13,7 @@ public abstract class InMemoryRepository
         <ObjectType extends Entry<ObjectId>, ObjectId extends Long>
         implements Repository<ObjectType, ObjectId> {
 
-    private final Map<ObjectId, ObjectType> entries = new HashMap<>();
+    protected final Map<ObjectId, ObjectType> entries = new HashMap<>();
 
     @Override
     public ObjectId insert(ObjectType object) {

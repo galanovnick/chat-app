@@ -1,17 +1,14 @@
 package entity;
 
-import entity.tiny.UserName;
-
 public class AuthenticatedUser implements Entry<Long> {
 
-    private Long id;
+    private Long id = 0L;
     private AuthenticationToken token;
-    private UserName username;
+    private Long userId;
 
-    public AuthenticatedUser(Long id, AuthenticationToken token, UserName username) {
-        this.id = id;
+    public AuthenticatedUser(AuthenticationToken token, Long userId) {
         this.token = token;
-        this.username = username;
+        this.userId = userId;
     }
 
     @Override
@@ -32,11 +29,11 @@ public class AuthenticatedUser implements Entry<Long> {
         this.token = token;
     }
 
-    public UserName getUsername() {
-        return username;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUsername(UserName username) {
-        this.username = username;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

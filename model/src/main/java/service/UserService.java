@@ -1,13 +1,13 @@
 package service;
 
 import entity.AuthenticationToken;
-import entity.User;
 import entity.tiny.UserName;
 import entity.tiny.UserPassword;
+import service.impl.dto.UserDto;
 
 public interface UserService {
 
-    long registerUser(User user) throws InvalidUserDataException;
+    long registerUser(UserDto user) throws InvalidUserDataException;
 
     boolean isUserRegistered(long id);
 

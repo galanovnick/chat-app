@@ -5,12 +5,11 @@ import entity.tiny.UserPassword;
 
 public class User implements Entry<Long> {
 
-    private Long id;
+    private Long id = 0L;
     private UserName username;
     private UserPassword password;
 
-    public User(Long id, UserName username, UserPassword password) {
-        this.id = id;
+    public User(UserName username, UserPassword password) {
         this.username = username;
         this.password = password;
     }

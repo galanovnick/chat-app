@@ -1,6 +1,10 @@
 package repository;
 
+import com.google.common.base.Optional;
 import entity.AuthenticatedUser;
+import entity.AuthenticationToken;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class UserAuthenticationRepository extends InMemoryRepository<AuthenticatedUser, Long> {
 
@@ -18,6 +22,17 @@ public class UserAuthenticationRepository extends InMemoryRepository<Authenticat
     }
 
     private UserAuthenticationRepository() {}
+
+    public Optional<AuthenticatedUser> findByToken(AuthenticationToken token) {
+        checkNotNull(token, "Token cannot be null.");
+
+        for (AuthenticatedUser user : entries.values()) {
+            if (user.getToken().equals(token)) {
+                return Optional.of(user);
+            }
+        }
+        return Optional.absent();
+    }
 
     public static UserAuthenticationRepository getInstance() {
         if (instance == null) {

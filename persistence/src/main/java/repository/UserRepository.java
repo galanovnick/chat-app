@@ -1,6 +1,8 @@
 package repository;
 
+import com.google.common.base.Optional;
 import entity.User;
+import entity.tiny.UserName;
 
 public class UserRepository extends InMemoryRepository<User, Long> {
 
@@ -18,6 +20,15 @@ public class UserRepository extends InMemoryRepository<User, Long> {
     }
 
     private UserRepository() {}
+
+    public Optional<User> getUserByUsername(UserName userName) {
+        for (User user : entries.values()) {
+            if (user.getUsername().equals(userName)) {
+                return Optional.of(user);
+            }
+        }
+        return Optional.absent();
+    }
 
     public static UserRepository getInstance() {
         if (instance == null) {
