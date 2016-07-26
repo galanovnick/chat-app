@@ -1,12 +1,14 @@
 package repository;
 
-import com.google.common.base.Optional;
+import entity.Entity;
+import entity.tiny.EntityId;
 
 import java.util.Collection;
+import java.util.Optional;
 
-public interface Repository<ObjectType, ObjectId extends Long> {
+interface Repository<ObjectType extends Entity<ObjectId>, ObjectId extends EntityId> {
 
-    ObjectId insert(ObjectType object);
+    ObjectId add(ObjectType object);
 
     Optional<ObjectType> findOne(ObjectId id);
 

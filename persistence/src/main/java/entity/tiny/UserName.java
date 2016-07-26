@@ -2,18 +2,14 @@ package entity.tiny;
 
 public class UserName {
 
-    private String username;
+    private final String username;
 
     public UserName(String username) {
         this.username = username;
     }
 
-    public String getUsername() {
+    public String value() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     @Override

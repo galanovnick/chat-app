@@ -1,11 +1,31 @@
 package entity;
 
-public class AuthenticationToken {
+import entity.tiny.AuthenticationTokenId;
 
+public class AuthenticationToken implements Entity<AuthenticationTokenId>{
+
+    private Long id;
     private String token;
+    private Long userId;
 
-    public AuthenticationToken(String token) {
+    public AuthenticationToken(String token, Long userId) {
         this.token = token;
+        this.userId = userId;
+    }
+
+    public AuthenticationToken(Long id, String token, Long userId) {
+        this.id = id;
+        this.token = token;
+        this.userId = userId;
+    }
+
+    @Override
+    public AuthenticationTokenId getId() {
+        return new AuthenticationTokenId(id);
+    }
+
+    public void setId(AuthenticationTokenId id) {
+        this.id = id.value();
     }
 
     public String getToken() {
@@ -16,19 +36,11 @@ public class AuthenticationToken {
         this.token = token;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        AuthenticationToken that = (AuthenticationToken) o;
-
-        return token != null ? token.equals(that.token) : that.token == null;
-
+    public Long getUserId() {
+        return userId;
     }
 
-    @Override
-    public int hashCode() {
-        return token != null ? token.hashCode() : 0;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

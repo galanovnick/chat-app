@@ -1,24 +1,30 @@
 package service;
 
 import entity.AuthenticationToken;
+import entity.tiny.UserId;
 import entity.tiny.UserName;
 import entity.tiny.UserPassword;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import service.impl.UserServiceImpl;
-import service.impl.dto.UserDto;
+import service.impl.dto.RegistrationDto;
 
-import static org.junit.Assert.assertEquals;
+import java.util.UUID;
+
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class UserServiceShould {
 
     private final UserService userService = UserServiceImpl.getInstance();
 
-    private final UserDto user = new UserDto("vasya", "123", "123");
+    private final RegistrationDto user = new RegistrationDto(
+            new UserName("Vasya"),
+            new UserPassword("123"),
+            new UserPassword("123"));
 
-    private Long userId;
+    private UserId userId;
 
     @Before
     public void before() throws InvalidUserDataException {
@@ -35,21 +41,26 @@ public class UserServiceShould {
     }
 
     @Test
-    public void registerUser() throws InvalidUserDataException {
-        assertEquals("Failed user registration.", true, userService.isUserRegistered(userId));
+    public void registerUser() {
+        assertTrue("Failed user registration.", userService.isUserRegistered(userId));
     }
 
     @Test
-    public void authenticateUser() throws AuthenticationException, InvalidUserDataException {
-        final AuthenticationToken token = userService.login(
-                new UserName(user.getUsername()),
-                new UserPassword(user.getPassword()));
+    public void authenticateUser() {
+        AuthenticationToken token = null;
+        try {
+            token = userService.login(
+                    new UserName(user.getUsername()),
+                    new UserPassword(user.getPassword()));
+        } catch (AuthenticationException e) {
+            fail("Failed user addition.");
+        }
 
-        boolean actual = userService.isUserAuthenticated(userId, token);
+        boolean actual = userService.isUserAuthenticated(userId, token.getToken());
 
         userService.terminateAuthentication(token);
 
-        assertEquals("Failed user authentication", true, actual);
+        assertTrue("Failed user authentication", actual);
     }
 
     @Test(expected = InvalidUserDataException.class)
@@ -62,10 +73,20 @@ public class UserServiceShould {
 
     @Test(expected = InvalidUserDataException.class)
     public void notRegisterUserWithDifferentPasswords() throws InvalidUserDataException {
-        final UserDto user = new UserDto("user", "123", "321");
+        final RegistrationDto user = new RegistrationDto(
+                new UserName("Vasya"),
+                new UserPassword("123"),
+                new UserPassword("321"));
 
         userService.registerUser(user);
 
         fail("Expected InvalidUserDataException.");
+    }
+
+    @Test(expected = AuthenticationException.class)
+    public void notAuthenticateInvalidUser() throws AuthenticationException {
+        AuthenticationToken token =  userService.login(
+                    new UserName(UUID.randomUUID().toString()),
+                    new UserPassword(UUID.randomUUID().toString()));
     }
 }

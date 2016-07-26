@@ -1,38 +1,36 @@
 package service.impl.dto;
 
+import entity.tiny.UserName;
+
 public class UserDto {
 
     private String username;
-    private String password;
-    private String passwordConfirm;
 
-    public UserDto(String username, String password, String passwordConfirm) {
-        this.username = username;
-        this.password = password;
-        this.passwordConfirm = passwordConfirm;
+    public UserDto(UserName username) {
+        this.username = username.value();
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(UserName username) {
+        this.username = username.value();
     }
 
-    public String getPassword() {
-        return password;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserDto userDto = (UserDto) o;
+
+        return username != null ? username.equals(userDto.username) : userDto.username == null;
+
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    public void setPasswordConfirm(String passwordConfirm) {
-        this.passwordConfirm = passwordConfirm;
+    @Override
+    public int hashCode() {
+        return username != null ? username.hashCode() : 0;
     }
 }

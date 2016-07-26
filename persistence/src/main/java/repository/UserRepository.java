@@ -1,10 +1,12 @@
 package repository;
 
-import com.google.common.base.Optional;
 import entity.User;
+import entity.tiny.UserId;
 import entity.tiny.UserName;
 
-public class UserRepository extends InMemoryRepository<User, Long> {
+import java.util.Optional;
+
+public class UserRepository extends InMemoryRepository<User, UserId> {
 
     private static UserRepository instance;
 
@@ -13,9 +15,9 @@ public class UserRepository extends InMemoryRepository<User, Long> {
     private long idCounter = 0;
 
     @Override
-    protected Long nextId() {
+    protected UserId nextId() {
         synchronized (ID_LOCK) {
-            return idCounter++;
+            return new UserId(idCounter++);
         }
     }
 
@@ -23,11 +25,11 @@ public class UserRepository extends InMemoryRepository<User, Long> {
 
     public Optional<User> getUserByUsername(UserName userName) {
         for (User user : entries.values()) {
-            if (user.getUsername().equals(userName)) {
+            if (user.getUsername().equals(userName.value())) {
                 return Optional.of(user);
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     public static UserRepository getInstance() {

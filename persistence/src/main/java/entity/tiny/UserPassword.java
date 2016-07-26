@@ -2,18 +2,14 @@ package entity.tiny;
 
 public class UserPassword {
 
-    private String password;
+    private final String password;
 
     public UserPassword(String password) {
         this.password = password;
     }
 
-    public String getPassword() {
+    public String value() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     @Override
@@ -23,9 +19,8 @@ public class UserPassword {
 
         UserPassword that = (UserPassword) o;
 
-        if (password != null ? !password.equals(that.password) : that.password != null) return false;
+        return password != null ? password.equals(that.password) : that.password == null;
 
-        return true;
     }
 
     @Override

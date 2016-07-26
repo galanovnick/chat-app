@@ -1,23 +1,24 @@
 package repository;
 
-import com.google.common.base.Optional;
-import entity.Entry;
+import entity.Entity;
+import entity.tiny.EntityId;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class InMemoryRepository
-        <ObjectType extends Entry<ObjectId>, ObjectId extends Long>
+abstract class InMemoryRepository
+        <ObjectType extends Entity<ObjectId>, ObjectId extends EntityId>
         implements Repository<ObjectType, ObjectId> {
 
-    protected final Map<ObjectId, ObjectType> entries = new HashMap<>();
+    final Map<ObjectId, ObjectType> entries = new HashMap<>();
 
     @Override
-    public ObjectId insert(ObjectType object) {
-        checkNotNull(object, "Entry cannot be null.");
+    public ObjectId add(ObjectType object) {
+        checkNotNull(object, "Entity cannot be null.");
 
         object.setId(nextId());
         entries.put(object.getId(), object);
@@ -27,7 +28,7 @@ public abstract class InMemoryRepository
 
     @Override
     public Optional<ObjectType> findOne(ObjectId objectId) {
-        return Optional.fromNullable(entries.get(objectId));
+        return Optional.ofNullable(entries.get(objectId));
     }
 
     @Override
