@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
                 log.debug(String.format("Failed attempt to register user with name = '%s'. " +
                         "Reason: different passwords.", userData.getUsername()));
             }
-            throw new InvalidUserDataException("Password do not match.");
+            throw new InvalidUserDataException("Passwords do not match.");
         }
         if (userRepository.getUserByUsername(new UserName(userData.getUsername())).isPresent()) {
             if (log.isDebugEnabled()) {

@@ -36,5 +36,9 @@ project(':web') {
     dependencies {
         compile project(':model')
         provided group: 'javax.servlet', name: 'servlet-api', version: '2.5'
+        testCompile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
+        testCompile group: 'org.apache.httpcomponents', name: 'httpclient-cache', version: '4.5.2'
+        testCompile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.2'
+        testCompile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.2'
     }
 }

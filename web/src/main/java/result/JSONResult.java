@@ -37,5 +37,6 @@ public class JSONResult implements Result {
         resultJSON.deleteCharAt(resultJSON.length() - 1);
         resultJSON.append("}");
         responseWriter.write(resultJSON.toString());
+        response.setStatus(200);
     }
 }
