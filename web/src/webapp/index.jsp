@@ -11,6 +11,11 @@
     <title>$Title$</title>
   </head>
   <body>
-  $END$
+  <form action="/register" method="post">
+    <input type="text" name="username" placeholder="Username"/>
+    <input type="password" name="password" placeholder="Password"/>
+    <input type="password" name="passwordConfirm" placeholder="Password confirm"/>
+    <input type="submit"/>
+  </form>
   </body>
 </html>

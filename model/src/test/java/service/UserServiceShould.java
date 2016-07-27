@@ -85,8 +85,10 @@ public class UserServiceShould {
 
     @Test(expected = AuthenticationException.class)
     public void notAuthenticateInvalidUser() throws AuthenticationException {
-        AuthenticationToken token =  userService.login(
-                    new UserName(UUID.randomUUID().toString()),
-                    new UserPassword(UUID.randomUUID().toString()));
+        userService.login(
+                new UserName(UUID.randomUUID().toString()),
+                new UserPassword(UUID.randomUUID().toString()));
+
+        fail("Expected AuthenticationException.");
     }
 }

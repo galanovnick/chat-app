@@ -1,8 +1,1 @@
-version '1.0-SNAPSHOT'
-
-apply plugin: 'war'
-
-dependencies {
-    compile project(':model')
-    compile group: 'javax.servlet', name: 'servlet-api', version: '2.5'
-}
+webAppDirName = 'src/webapp'
