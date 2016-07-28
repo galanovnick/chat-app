@@ -1,5 +1,6 @@
 package servlet;
 
+import controller.LoginController;
 import controller.RegistrationController;
 import handler.Handler;
 import handler.HandlerRegistration;
@@ -21,6 +22,9 @@ public class DispatcherServlet extends HttpServlet {
 
     private final RegistrationController registrationController
             = RegistrationController.getInstance();
+
+    private final LoginController loginController
+            = LoginController.getInstance();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -45,7 +49,7 @@ public class DispatcherServlet extends HttpServlet {
         } else {
             try {
                 response.getWriter().write("not found");
-                response.setStatus(404);
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             } catch (IOException e) {
                 throw new IllegalStateException(e);
             }

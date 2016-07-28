@@ -84,6 +84,15 @@ public class UserServiceImpl implements UserService {
         checkNotNull(username, "Username cannot be null");
         checkNotNull(password, "Password cannot be null");
 
+        if (username.value().equals("") || password.value().equals("")) {
+            if (log.isDebugEnabled()) {
+                log.debug(String.format("Failed attempt to authenticate user with username = '%s'." +
+                                "Reason: empty fields.",
+                        username.value()));
+            }
+            throw new AuthenticationException("Fields cannot be empty.");
+        }
+
         if (log.isDebugEnabled()) {
             log.debug(String.format("Trying to authenticated user with username = '%s'...",
                     username.value()));
@@ -104,10 +113,11 @@ public class UserServiceImpl implements UserService {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Failed attempt to authenticate user with username = '%s'.",
+            log.debug(String.format("Failed attempt to authenticate user with username = '%s'." +
+                            "Reason: invalid username or password.",
                     username.value()));
         }
-        throw new AuthenticationException();
+        throw new AuthenticationException("Invalid username or password.");
     }
 
     @Override

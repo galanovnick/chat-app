@@ -1,7 +1,5 @@
 package result;
 
-import com.sun.javafx.binding.StringFormatter;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -37,6 +35,6 @@ public class JSONResult implements Result {
         resultJSON.deleteCharAt(resultJSON.length() - 1);
         resultJSON.append("}");
         responseWriter.write(resultJSON.toString());
-        response.setStatus(200);
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

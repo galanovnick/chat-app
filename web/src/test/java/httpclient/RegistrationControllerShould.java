@@ -12,28 +12,13 @@ import java.util.List;
 import java.util.UUID;
 
 import static httpclient.HttpClientTestUtils.getResponseContent;
-import static httpclient.HttpClientTestUtils.sendGet;
 import static httpclient.HttpClientTestUtils.sendPost;
 import static org.junit.Assert.assertEquals;
 
 public class RegistrationControllerShould {
 
-    private final String baseUrl = "http://localhost:8080/";
+    private final String baseUrl = "http://localhost:8080/register";
     private HttpClient client = HttpClientBuilder.create().build();
-
-    @Test
-    public void handleGetOnMainPage() {
-        HttpResponse response = sendGet(baseUrl, client);
-
-        assertEquals("Failed on root get request.", 200, response.getStatusLine().getStatusCode());
-    }
-
-    @Test
-    public void handleGetOnInvalidUrl() {
-        HttpResponse response = sendGet(baseUrl + UUID.randomUUID().toString(), client);
-
-        assertEquals("Failed on root get request.", 404, response.getStatusLine().getStatusCode());
-    }
 
     @Test
     public void handleSuccessfullyUserRegistration() {
@@ -42,7 +27,7 @@ public class RegistrationControllerShould {
         params.add(new BasicNameValuePair("password", "12345"));
         params.add(new BasicNameValuePair("passwordConfirm", "12345"));
 
-        HttpResponse response = sendPost(baseUrl + "register", params, client);
+        HttpResponse response = sendPost(baseUrl, params, client);
 
         String expectedContent = "{\"isRegistered\": \"true\"," +
                 "\"message\": \"User has been successfully registered.\"}";
@@ -60,7 +45,7 @@ public class RegistrationControllerShould {
         params.add(new BasicNameValuePair("password", "54321"));
         params.add(new BasicNameValuePair("passwordConfirm", "12345"));
 
-        HttpResponse response = sendPost(baseUrl + "register", params, client);
+        HttpResponse response = sendPost(baseUrl, params, client);
 
         String expectedContent = "{\"isRegistered\": \"false\"," +
                 "\"message\": \"Passwords do not match.\"}";
@@ -78,7 +63,7 @@ public class RegistrationControllerShould {
         params.add(new BasicNameValuePair("password", ""));
         params.add(new BasicNameValuePair("passwordConfirm", ""));
 
-        HttpResponse response = sendPost(baseUrl + "register", params, client);
+        HttpResponse response = sendPost(baseUrl, params, client);
 
         String expectedContent = "{\"isRegistered\": \"false\"," +
                 "\"message\": \"Fields cannot be empty.\"}";
@@ -96,8 +81,8 @@ public class RegistrationControllerShould {
         params.add(new BasicNameValuePair("password", "123"));
         params.add(new BasicNameValuePair("passwordConfirm", "123"));
 
-        sendPost(baseUrl + "register", params, client);
-        HttpResponse response = sendPost(baseUrl + "register", params, client);
+        sendPost(baseUrl, params, client);
+        HttpResponse response = sendPost(baseUrl, params, client);
 
         String expectedContent = "{\"isRegistered\": \"false\"," +
                 "\"message\": \"User with such name already exists.\"}";

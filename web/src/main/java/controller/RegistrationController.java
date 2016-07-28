@@ -33,20 +33,12 @@ public class RegistrationController {
                 }
             }
 
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
-            String passwordConfirm = request.getParameter("passwordConfirm");
-
-            checkNotNull(username, "Username cannot be null");
-            checkNotNull(password, "Password cannot be null");
-            checkNotNull(passwordConfirm, "Password confirm cannot be null");
-
             JSONResult result = new JSONResult();
 
             RegistrationDto regDto = new RegistrationDto(
-                    new UserName(username),
-                    new UserPassword(password),
-                    new UserPassword(passwordConfirm)
+                    new UserName(request.getParameter("username")),
+                    new UserPassword(request.getParameter("password")),
+                    new UserPassword(request.getParameter("passwordConfirm"))
             );
 
             try {
