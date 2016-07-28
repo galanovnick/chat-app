@@ -1,16 +1,15 @@
 package entity;
 
 import entity.tiny.chat.MessageId;
-import entity.tiny.user.UserId;
 
 public class Message implements Entity<MessageId> {
 
     private MessageId id = new MessageId(0L);
-    private UserId userId;
+    private String username;
     private String text;
 
-    public Message(UserId userId, String text) {
-        this.userId = userId;
+    public Message(String username, String text) {
+        this.username = username;
         this.text = text;
     }
 
@@ -24,20 +23,20 @@ public class Message implements Entity<MessageId> {
         this.id = id;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getText() {
         return text;
     }
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public UserId getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UserId userId) {
-        this.userId = userId;
     }
 
     @Override
@@ -48,7 +47,7 @@ public class Message implements Entity<MessageId> {
         Message message = (Message) o;
 
         if (id != null ? !id.equals(message.id) : message.id != null) return false;
-        if (userId != null ? !userId.equals(message.userId) : message.userId != null) return false;
+        if (username != null ? !username.equals(message.username) : message.username != null) return false;
         return text != null ? text.equals(message.text) : message.text == null;
 
     }
@@ -56,7 +55,7 @@ public class Message implements Entity<MessageId> {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (userId != null ? userId.hashCode() : 0);
+        result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (text != null ? text.hashCode() : 0);
         return result;
     }

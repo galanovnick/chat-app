@@ -33,7 +33,7 @@ public class ChatServiceShould {
         try {
             chatId = chatService.createChat(
                     chatName,
-                    new UserDto(new UserName("some-user")));
+                    new UserId(0L));
         } catch (InvalidChatNameException e) {
             e.printStackTrace();
             fail("Failed on chat creation.");
@@ -53,26 +53,26 @@ public class ChatServiceShould {
 
     @Test(expected = InvalidChatNameException.class)
     public void notCreateChatWithDuplicatedName() throws InvalidChatNameException {
-        chatService.createChat(chatName, new UserDto(new UserName("some-user")));
+        chatService.createChat(chatName, new UserId(0L));
         fail("Failed on chat with duplicated name creation.");
     }
 
     @Test(expected = InvalidChatNameException.class)
     public void notCreateChatWithEmptyName() throws InvalidChatNameException {
-        chatService.createChat("", new UserDto(new UserName("some-user")));
+        chatService.createChat("", new UserId(0L));
         fail("Failed on chat with empty name creation.");
     }
 
     @Test(expected = InvalidChatNameException.class)
     public void notCreateChatWithInvalidName() throws InvalidChatNameException {
-        chatService.createChat("   ", new UserDto(new UserName("some-user")));
+        chatService.createChat("   ", new UserId(0L));
         fail("Failed on chat with invalid name creation.");
     }
 
     @Test
     public void addUserToChat() {
 
-        final Collection<UserDto> chatUsers = chatService.getChatUsers(chatId);
+        final Collection<UserId> chatUsers = chatService.getChatUsers(chatId);
 
         if (chatUsers.size() > 0) {
             fail("Repository have to be empty.");
@@ -95,7 +95,7 @@ public class ChatServiceShould {
     @Test(expected = UserAlreadyInChatException.class)
     public void notAddDuplicatedUserToChat() throws UserAlreadyInChatException {
 
-        final Collection<UserDto> chatUsers = chatService.getChatUsers(chatId);
+        final Collection<UserId> chatUsers = chatService.getChatUsers(chatId);
 
         if (chatUsers.size() > 0) {
             fail("Repository have to be empty.");
@@ -108,7 +108,7 @@ public class ChatServiceShould {
 
     @Test
     public void removeUsersFromChat() {
-        final Collection<UserDto> chatUsers = chatService.getChatUsers(chatId);
+        final Collection<UserId> chatUsers = chatService.getChatUsers(chatId);
 
         if (chatUsers.size() > 0) {
             fail("Repository have to be empty.");
@@ -134,7 +134,7 @@ public class ChatServiceShould {
             fail("Repository have to be empty.");
         }
 
-        chatService.addMessage(chatId, new Message(new UserId(0L), "Hi!"));
+        chatService.addMessage(chatId, new Message("Hi!", "Vasya"));
 
         assertEquals("Failed on message addition.", 1,
                 chatService.getAllChatMessages(chatId).size());

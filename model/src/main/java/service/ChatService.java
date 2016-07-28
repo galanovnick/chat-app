@@ -5,13 +5,12 @@ import entity.tiny.chat.ChatId;
 import entity.tiny.user.UserId;
 import service.impl.dto.ChatDto;
 import service.impl.dto.MessageDto;
-import service.impl.dto.UserDto;
 
 import java.util.Collection;
 
 public interface ChatService {
 
-    ChatId createChat(String chatName, UserDto creator)
+    ChatId createChat(String chatName, UserId creatorId)
             throws InvalidChatNameException;
 
     void removeChat(ChatId chatId);
@@ -25,7 +24,7 @@ public interface ChatService {
 
     void leaveChat(ChatId chatId, UserId userId);
 
-    Collection<UserDto> getChatUsers(ChatId chatId);
+    Collection<UserId> getChatUsers(ChatId chatId);
 
     void addMessage(ChatId chatId, Message message);
 
