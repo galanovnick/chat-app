@@ -1,7 +1,7 @@
 package service.impl.dto;
 
-import entity.tiny.UserName;
-import entity.tiny.UserPassword;
+import entity.tiny.user.UserName;
+import entity.tiny.user.UserPassword;
 
 public class RegistrationDto {
 

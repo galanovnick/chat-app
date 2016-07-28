@@ -15,7 +15,7 @@ import java.util.List;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 import static org.junit.Assert.fail;
 
-interface HttpClientTestUtils {
+public interface HttpClientTestUtils {
 
     static String getResponseContent(HttpResponse response, HttpClient client) {
         try {

@@ -1,6 +1,6 @@
 package service.impl.dto;
 
-import entity.tiny.UserName;
+import entity.tiny.user.UserName;
 
 public class UserDto {
 

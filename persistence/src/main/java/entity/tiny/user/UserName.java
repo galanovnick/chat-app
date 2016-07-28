@@ -1,4 +1,4 @@
-package entity.tiny;
+package entity.tiny.user;
 
 public class UserName {
 

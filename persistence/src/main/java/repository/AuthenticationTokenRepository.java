@@ -1,7 +1,7 @@
 package repository;
 
 import entity.AuthenticationToken;
-import entity.tiny.AuthenticationTokenId;
+import entity.tiny.user.AuthenticationTokenId;
 
 import java.util.Optional;
 

@@ -1,6 +1,6 @@
 package entity;
 
-import entity.tiny.AuthenticationTokenId;
+import entity.tiny.user.AuthenticationTokenId;
 
 public class AuthenticationToken implements Entity<AuthenticationTokenId>{
 

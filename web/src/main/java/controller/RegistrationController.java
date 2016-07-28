@@ -1,7 +1,7 @@
 package controller;
 
-import entity.tiny.UserName;
-import entity.tiny.UserPassword;
+import entity.tiny.user.UserName;
+import entity.tiny.user.UserPassword;
 import handler.HandlerRegistration;
 import handler.HandlerRegistrationImpl;
 import result.JSONResult;

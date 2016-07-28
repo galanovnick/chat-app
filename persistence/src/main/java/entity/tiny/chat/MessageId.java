@@ -1,15 +1,18 @@
-package entity.tiny;
+package entity.tiny.chat;
 
-public class AuthenticationTokenId implements EntityId<Long> {
+import entity.tiny.EntityId;
+
+public class MessageId implements EntityId<Long> {
 
     private final Long id;
 
-    public AuthenticationTokenId(Long id) {
+    public MessageId(Long id) {
         this.id = id;
     }
 
+    @Override
     public Long value() {
-        return id;
+        return null;
     }
 
     @Override
@@ -17,9 +20,9 @@ public class AuthenticationTokenId implements EntityId<Long> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AuthenticationTokenId that = (AuthenticationTokenId) o;
+        MessageId messageId = (MessageId) o;
 
-        return id != null ? id.equals(that.id) : that.id == null;
+        return id != null ? id.equals(messageId.id) : messageId.id == null;
 
     }
 

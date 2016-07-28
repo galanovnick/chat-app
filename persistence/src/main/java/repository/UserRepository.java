@@ -1,8 +1,8 @@
 package repository;
 
 import entity.User;
-import entity.tiny.UserId;
-import entity.tiny.UserName;
+import entity.tiny.user.UserId;
+import entity.tiny.user.UserName;
 
 import java.util.Optional;
 

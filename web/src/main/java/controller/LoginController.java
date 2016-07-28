@@ -1,15 +1,13 @@
 package controller;
 
 import entity.AuthenticationToken;
-import entity.tiny.UserName;
-import entity.tiny.UserPassword;
+import entity.tiny.user.UserName;
+import entity.tiny.user.UserPassword;
 import handler.HandlerRegistrationImpl;
 import result.JSONResult;
 import service.AuthenticationException;
-import service.InvalidUserDataException;
 import service.UserService;
 import service.impl.UserServiceImpl;
-import service.impl.dto.RegistrationDto;
 
 import java.io.IOException;
 

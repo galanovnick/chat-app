@@ -2,9 +2,9 @@ package service.impl;
 
 import entity.AuthenticationToken;
 import entity.User;
-import entity.tiny.UserId;
-import entity.tiny.UserName;
-import entity.tiny.UserPassword;
+import entity.tiny.user.UserId;
+import entity.tiny.user.UserName;
+import entity.tiny.user.UserPassword;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.AuthenticationTokenRepository;
