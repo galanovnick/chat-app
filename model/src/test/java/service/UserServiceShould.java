@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import service.impl.UserServiceImpl;
+import service.impl.dto.AuthenticatedUserDto;
 import service.impl.dto.RegistrationDto;
 
 import java.util.UUID;
@@ -47,18 +48,18 @@ public class UserServiceShould {
 
     @Test
     public void authenticateUser() {
-        AuthenticationToken token = null;
+        AuthenticatedUserDto user = null;
         try {
-            token = userService.login(
-                    new UserName(user.getUsername()),
-                    new UserPassword(user.getPassword()));
+            user = userService.login(
+                    new UserName(this.user.getUsername()),
+                    new UserPassword(this.user.getPassword()));
         } catch (AuthenticationException e) {
             fail("Failed user addition.");
         }
 
-        boolean actual = userService.isUserAuthenticated(userId, token.getToken());
+        boolean actual = userService.isUserAuthenticated(userId, user.getToken());
 
-        userService.terminateAuthentication(token);
+        userService.terminateAuthentication(user);
 
         assertTrue("Failed user authentication", actual);
     }

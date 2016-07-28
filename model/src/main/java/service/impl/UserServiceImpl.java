@@ -12,6 +12,7 @@ import repository.UserRepository;
 import service.AuthenticationException;
 import service.InvalidUserDataException;
 import service.UserService;
+import service.impl.dto.AuthenticatedUserDto;
 import service.impl.dto.RegistrationDto;
 import service.impl.dto.UserDto;
 
@@ -19,6 +20,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -78,7 +80,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthenticationToken login(UserName username, UserPassword password)
+    public AuthenticatedUserDto login(UserName username, UserPassword password)
             throws AuthenticationException {
 
         checkNotNull(username, "Username cannot be null");
@@ -109,7 +111,7 @@ public class UserServiceImpl implements UserService {
                 log.debug(String.format("User with username = '%s' successfully authenticated.",
                         username.value()));
             }
-            return token;
+            return new AuthenticatedUserDto(token.getToken(), new UserId(token.getUserId()));
         }
 
         if (log.isDebugEnabled()) {
@@ -133,13 +135,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void terminateAuthentication(AuthenticationToken token) {
-        tokenRepository.delete(token.getId());
+    public void terminateAuthentication(AuthenticatedUserDto user) {
+        Optional<AuthenticationToken> token = tokenRepository.findByTokenString(user.getToken());
+        if (token.isPresent()) {
+            tokenRepository.delete(token.get().getId());
+        } else {
+            throw new IllegalStateException(
+                    String.format("Attempt to terminate user session with invalid token: %s",
+                            user.getToken()));
+        }
     }
 
     @Override
-    public Collection<AuthenticationToken> getAllAuthenticatedUsers() {
-        return tokenRepository.findAll();
+    public Collection<AuthenticatedUserDto> getAllAuthenticatedUsers() {
+        return tokenRepository.findAll().stream()
+                .map(token -> new AuthenticatedUserDto(token.getToken(), new UserId(token.getUserId())))
+                .collect(Collectors.toList());
     }
 
     @Override

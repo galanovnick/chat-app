@@ -1,11 +1,14 @@
 package service.impl;
 
-import entity.AuthenticationToken;
-import entity.Chat;
 import entity.Message;
 import entity.tiny.chat.ChatId;
-import service.AuthenticationException;
+import entity.tiny.user.UserId;
 import service.ChatService;
+import service.InvalidChatNameException;
+import service.UserAlreadyInChatException;
+import service.impl.dto.ChatDto;
+import service.impl.dto.MessageDto;
+import service.impl.dto.UserDto;
 
 import java.util.Collection;
 
@@ -14,32 +17,47 @@ public class ChatServiceImpl implements ChatService {
     private static ChatService instance;
 
     @Override
-    public ChatId createChat(AuthenticationToken token, String chatName) throws AuthenticationException {
+    public ChatId createChat(String chatName, UserDto creator) throws InvalidChatNameException {
         return null;
     }
 
     @Override
-    public Collection<Chat> getAllChats(AuthenticationToken token) throws AuthenticationException {
+    public void removeChat(ChatId chatId) {
+
+    }
+
+    @Override
+    public ChatDto getChat(ChatId chatId) {
         return null;
     }
 
     @Override
-    public void joinChat(AuthenticationToken token, ChatId chatId) throws AuthenticationException {
+    public Collection<ChatDto> getAllChats() {
+        return null;
+    }
+
+    @Override
+    public void joinChat(ChatId chatId, UserId userId) throws UserAlreadyInChatException {
 
     }
 
     @Override
-    public void leaveChat(AuthenticationToken token, ChatId chatId) throws AuthenticationException {
+    public void leaveChat(ChatId chatId, UserId userId) {
 
     }
 
     @Override
-    public void addMessage(AuthenticationToken token, String text, ChatId chatId) throws AuthenticationException {
+    public Collection<UserDto> getChatUsers(ChatId chatId) {
+        return null;
+    }
+
+    @Override
+    public void addMessage(ChatId chatId, Message message) {
 
     }
 
     @Override
-    public Collection<Message> getAllChatMessages(AuthenticationToken token, ChatId chatId) throws AuthenticationException {
+    public Collection<MessageDto> getAllChatMessages(ChatId chatId) {
         return null;
     }
 

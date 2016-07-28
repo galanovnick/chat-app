@@ -3,9 +3,10 @@ package servlet;
 import controller.LoginController;
 import controller.RegistrationController;
 import handler.Handler;
-import handler.HandlerRegistration;
-import handler.HandlerRegistrationImpl;
-import result.Result;
+import handler.HandlerRegister;
+import handler.HandlerRegisterImpl;
+import handler.UrlMethodPair;
+import result.ResultWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,15 +17,14 @@ import java.util.Optional;
 
 public class DispatcherServlet extends HttpServlet {
 
+    //TODO: response code 555 - business logic problem | not 200! | mb 500?
+    private final HandlerRegister handlerRegister =
+            HandlerRegisterImpl.getInstance();
 
-    private final HandlerRegistration handlerRegistration =
-            HandlerRegistrationImpl.getInstance();
-
-    private final RegistrationController registrationController
-            = RegistrationController.getInstance();
-
-    private final LoginController loginController
-            = LoginController.getInstance();
+    public DispatcherServlet() {
+        handlerRegister.registerController(LoginController.class);
+        handlerRegister.registerController(RegistrationController.class);
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -42,9 +42,10 @@ public class DispatcherServlet extends HttpServlet {
     private void handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
 
-        Optional<Handler> handler = handlerRegistration.getHandler(request.getServletPath());
+        UrlMethodPair urlMethodPair = new UrlMethodPair(request.getServletPath(), request.getMethod());
+        Optional<Handler> handler = handlerRegister.getHandler(urlMethodPair);
         if (handler.isPresent()) {
-            Result result = handler.get().processRequest(request, response);
+            ResultWriter result = handler.get().processRequest(request, response);
             result.write(response);
         } else {
             try {

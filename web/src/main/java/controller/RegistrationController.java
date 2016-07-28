@@ -2,9 +2,10 @@ package controller;
 
 import entity.tiny.user.UserName;
 import entity.tiny.user.UserPassword;
-import handler.HandlerRegistration;
-import handler.HandlerRegistrationImpl;
-import result.JSONResult;
+import handler.HandlerRegister;
+import handler.HandlerRegisterImpl;
+import handler.UrlMethodPair;
+import result.JSONResultWriter;
 import service.InvalidUserDataException;
 import service.UserService;
 import service.impl.UserServiceImpl;
@@ -14,26 +15,24 @@ import java.io.IOException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class RegistrationController {
+public class RegistrationController implements Controller{
 
     private static RegistrationController instance;
+
+    static  {
+        getInstance();
+    }
 
     private final UserService userService = UserServiceImpl.getInstance();
 
     private RegistrationController() {
-        HandlerRegistration handlerRegistration = HandlerRegistrationImpl.getInstance();
-        handlerRegistration.register("/register", ((request, response) -> {
+        HandlerRegister handlerRegister = HandlerRegisterImpl.getInstance();
 
-            if (!request.getMethod().equalsIgnoreCase("post")) {
-                try {
-                    request.getRequestDispatcher("/").forward(request, response);
-                    return null;
-                } catch (IOException e) {
-                    throw new IllegalStateException(e);
-                }
-            }
+        UrlMethodPair postUrlMethodPair = new UrlMethodPair("/register", "POST");
 
-            JSONResult result = new JSONResult();
+        handlerRegister.register(postUrlMethodPair, ((request, response) -> {
+
+            JSONResultWriter result = new JSONResultWriter();
 
             RegistrationDto regDto = new RegistrationDto(
                     new UserName(request.getParameter("username")),
@@ -51,6 +50,16 @@ public class RegistrationController {
             result.put("isRegistered", "true");
             result.put("message", "User has been successfully registered.");
             return result;
+        }));
+
+        UrlMethodPair getUrlMethodPair = new UrlMethodPair("/register", "GET");
+        handlerRegister.register(getUrlMethodPair, ((request, response) -> {
+            try {
+                request.getRequestDispatcher("/").forward(request, response);
+                return null;
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
         }));
     }
 

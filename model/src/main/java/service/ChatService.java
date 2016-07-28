@@ -1,29 +1,33 @@
 package service;
 
-import entity.AuthenticationToken;
-import entity.Chat;
 import entity.Message;
 import entity.tiny.chat.ChatId;
+import entity.tiny.user.UserId;
+import service.impl.dto.ChatDto;
+import service.impl.dto.MessageDto;
+import service.impl.dto.UserDto;
 
 import java.util.Collection;
 
 public interface ChatService {
 
-    ChatId createChat(AuthenticationToken token, String chatName)
-            throws AuthenticationException;
+    ChatId createChat(String chatName, UserDto creator)
+            throws InvalidChatNameException;
 
-    Collection<Chat> getAllChats(AuthenticationToken token)
-        throws AuthenticationException;
+    void removeChat(ChatId chatId);
 
-    void joinChat(AuthenticationToken token, ChatId chatId)
-        throws AuthenticationException;
-    //TODO: user already in chat/ user already left exception???
-    void leaveChat(AuthenticationToken token, ChatId chatId)
-        throws AuthenticationException;
+    ChatDto getChat(ChatId chatId);
 
-    void addMessage(AuthenticationToken token, String text, ChatId chatId)
-        throws AuthenticationException;
+    Collection<ChatDto> getAllChats();
 
-    Collection<Message> getAllChatMessages(AuthenticationToken token, ChatId chatId)
-        throws AuthenticationException;
+    void joinChat(ChatId chatId, UserId userId)
+            throws UserAlreadyInChatException;
+
+    void leaveChat(ChatId chatId, UserId userId);
+
+    Collection<UserDto> getChatUsers(ChatId chatId);
+
+    void addMessage(ChatId chatId, Message message);
+
+    Collection<MessageDto> getAllChatMessages(ChatId chatId);
 }

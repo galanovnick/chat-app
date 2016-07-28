@@ -13,5 +13,5 @@ import org.junit.runners.Suite.SuiteClasses;
     RegistrationControllerShould.class,
     LoginControllerShould.class
 })
-public class HttpClientTestSuit {
+public class HttpClientTestSuite {
 }

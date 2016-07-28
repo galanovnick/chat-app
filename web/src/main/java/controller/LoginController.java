@@ -1,37 +1,38 @@
 package controller;
 
-import entity.AuthenticationToken;
 import entity.tiny.user.UserName;
 import entity.tiny.user.UserPassword;
-import handler.HandlerRegistrationImpl;
-import result.JSONResult;
+import handler.HandlerRegister;
+import handler.HandlerRegisterImpl;
+import handler.UrlMethodPair;
+import result.JSONResultWriter;
 import service.AuthenticationException;
 import service.UserService;
 import service.impl.UserServiceImpl;
+import service.impl.dto.AuthenticatedUserDto;
 
 import java.io.IOException;
 
-public class LoginController {
+public class LoginController implements Controller{
     private static LoginController instance;
+
+    static {
+        getInstance();
+    }
 
     private final UserService userService = UserServiceImpl.getInstance();
 
     private LoginController() {
-        HandlerRegistrationImpl.getInstance().register("/login", ((request, response) -> {
-            if (!request.getMethod().equalsIgnoreCase("post")) {
-                try {
-                    request.getRequestDispatcher("/").forward(request, response);
-                    return null;
-                } catch (IOException e) {
-                    throw new IllegalStateException(e);
-                }
-            }
+        UrlMethodPair postUrlMethodPair = new UrlMethodPair("/login", "POST");
 
-            JSONResult result = new JSONResult();
-            AuthenticationToken token;
+        HandlerRegister handlerRegister = HandlerRegisterImpl.getInstance();
+
+        handlerRegister.register(postUrlMethodPair, ((request, response) -> {
+            JSONResultWriter result = new JSONResultWriter();
+            AuthenticatedUserDto user;
 
             try {
-                token = userService.login(new UserName(request.getParameter("username")),
+                user = userService.login(new UserName(request.getParameter("username")),
                         new UserPassword(request.getParameter("password")));
             } catch (AuthenticationException e) {
                 result.put("isAuthenticated", "false");
@@ -39,8 +40,18 @@ public class LoginController {
                 return result;
             }
             result.put("isAuthenticated", "true");
-            result.put("token", token.getToken());
+            result.put("token", user.getToken());
             return result;
+        }));
+
+        UrlMethodPair getUrlMethodPair = new UrlMethodPair("/login", "GET");
+        handlerRegister.register(getUrlMethodPair, ((request, response) -> {
+            try {
+                request.getRequestDispatcher("/").forward(request, response);
+                return null;
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
         }));
     }
 

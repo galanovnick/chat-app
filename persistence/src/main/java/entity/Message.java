@@ -1,14 +1,16 @@
 package entity;
 
 import entity.tiny.chat.MessageId;
+import entity.tiny.user.UserId;
 
 public class Message implements Entity<MessageId> {
 
-    private MessageId id;
+    private MessageId id = new MessageId(0L);
+    private UserId userId;
     private String text;
 
-    public Message(MessageId id, String text) {
-        this.id = id;
+    public Message(UserId userId, String text) {
+        this.userId = userId;
         this.text = text;
     }
 
@@ -30,6 +32,14 @@ public class Message implements Entity<MessageId> {
         this.text = text;
     }
 
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -38,6 +48,7 @@ public class Message implements Entity<MessageId> {
         Message message = (Message) o;
 
         if (id != null ? !id.equals(message.id) : message.id != null) return false;
+        if (userId != null ? !userId.equals(message.userId) : message.userId != null) return false;
         return text != null ? text.equals(message.text) : message.text == null;
 
     }
@@ -45,6 +56,7 @@ public class Message implements Entity<MessageId> {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (userId != null ? userId.hashCode() : 0);
         result = 31 * result + (text != null ? text.hashCode() : 0);
         return result;
     }

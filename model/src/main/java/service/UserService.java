@@ -1,9 +1,9 @@
 package service;
 
-import entity.AuthenticationToken;
 import entity.tiny.user.UserId;
 import entity.tiny.user.UserName;
 import entity.tiny.user.UserPassword;
+import service.impl.dto.AuthenticatedUserDto;
 import service.impl.dto.RegistrationDto;
 import service.impl.dto.UserDto;
 
@@ -19,11 +19,11 @@ public interface UserService {
 
     Collection<UserDto> getAllRegisteredUsers();
 
-    void terminateAuthentication(AuthenticationToken token);
+    void terminateAuthentication(AuthenticatedUserDto user);
 
-    Collection<AuthenticationToken> getAllAuthenticatedUsers();
+    Collection<AuthenticatedUserDto> getAllAuthenticatedUsers();
 
-    AuthenticationToken login(UserName username, UserPassword password) throws AuthenticationException;
+    AuthenticatedUserDto login(UserName username, UserPassword password) throws AuthenticationException;
 
     boolean isUserAuthenticated(UserId userId, String token);
 }

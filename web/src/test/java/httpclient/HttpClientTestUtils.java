@@ -15,9 +15,11 @@ import java.util.List;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 import static org.junit.Assert.fail;
 
-public interface HttpClientTestUtils {
+public final class HttpClientTestUtils {
 
-    static String getResponseContent(HttpResponse response, HttpClient client) {
+    private HttpClientTestUtils(){}
+
+    public static String getResponseContent(HttpResponse response, HttpClient client) {
         try {
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(response.getEntity().getContent()));
@@ -36,7 +38,7 @@ public interface HttpClientTestUtils {
         return null;
     }
 
-    static HttpResponse sendGet(String url, HttpClient client) {
+    public static HttpResponse sendGet(String url, HttpClient client) {
         HttpGet request = new HttpGet(url);
         HttpResponse response = null;
         try {
@@ -48,7 +50,7 @@ public interface HttpClientTestUtils {
         return response;
     }
 
-    static HttpResponse sendPost(String url, List<NameValuePair> params, HttpClient client) {
+    public static HttpResponse sendPost(String url, List<NameValuePair> params, HttpClient client) {
         HttpPost request = new HttpPost(url);
         request.setHeader("User-Agent", USER_AGENT);
 

@@ -2,7 +2,7 @@ package result;
 
 import javax.servlet.http.HttpServletResponse;
 
-public interface Result {
+public interface ResultWriter {
 
     void write(HttpServletResponse response);
 }

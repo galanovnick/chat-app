@@ -6,15 +6,12 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JSONResult implements Result {
+public class JSONResultWriter implements ResultWriter {
 
     private final Map<String, String> content;
 
-    public JSONResult() {
+    public JSONResultWriter() {
         this.content = new HashMap<>();
-    }
-    public JSONResult(Map<String, String> content) {
-        this.content = content;
     }
 
     public void put(String key, String value) {
