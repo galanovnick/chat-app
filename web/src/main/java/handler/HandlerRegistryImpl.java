@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class HandlerRegisterImpl implements HandlerRegister {
+public class HandlerRegistryImpl implements HandlerRegistry {
 
-    private final Logger log = LoggerFactory.getLogger(HandlerRegister.class);
+    private final Logger log = LoggerFactory.getLogger(HandlerRegistry.class);
 
-    private static HandlerRegister instance;
+    private static HandlerRegistry instance;
 
     private final Map<UrlMethodPair, Handler> handlers = new HashMap<>();
 
@@ -54,11 +54,11 @@ public class HandlerRegisterImpl implements HandlerRegister {
         }
     }
 
-    private HandlerRegisterImpl(){}
+    private HandlerRegistryImpl(){}
 
-    public static HandlerRegister getInstance() {
+    public static HandlerRegistry getInstance() {
         if (instance == null) {
-            return instance = new HandlerRegisterImpl();
+            return instance = new HandlerRegistryImpl();
         }
         return instance;
     }

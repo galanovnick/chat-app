@@ -1,27 +1,22 @@
 package handler;
 
-import controller.HttpResponseMethod;
+import controller.HttpRequestMethod;
 
 public class UrlMethodPair {
 
     private final String url;
-    private final String method;
+    private final HttpRequestMethod method;
 
-    public UrlMethodPair(String url, HttpResponseMethod method) {
-        this.url = url;
-        this.method = method.name();
-    }
-
-    public UrlMethodPair(String url, String method) {
+    public UrlMethodPair(String url, HttpRequestMethod method) {
         this.url = url;
         this.method = method;
     }
 
-    String getUrl() {
+    public String getUrl() {
         return url;
     }
 
-    String getMethod() {
+    public HttpRequestMethod getMethod() {
         return method;
     }
 
@@ -32,9 +27,8 @@ public class UrlMethodPair {
 
         UrlMethodPair that = (UrlMethodPair) o;
 
-        return url != null ? url.equals(that.url)
-                : that.url == null && (method != null ? method.equals(that.method)
-                : that.method == null);
+        if (url != null ? !url.equals(that.url) : that.url != null) return false;
+        return method == that.method;
 
     }
 

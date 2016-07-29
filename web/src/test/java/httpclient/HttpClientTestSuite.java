@@ -10,7 +10,6 @@ import org.junit.runners.Suite.SuiteClasses;
     DefaultControllerShould.class,
     RegistrationControllerShould.class,
     LoginControllerShould.class,
-    UserMenuControllerShould.class,
     ChatControllerShould.class
 })
 public class HttpClientTestSuite {

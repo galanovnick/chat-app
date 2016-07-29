@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-abstract class InMemoryRepository
+/*package*/ abstract class InMemoryRepository
         <ObjectType extends Entity<ObjectId>, ObjectId extends EntityId>
         implements Repository<ObjectType, ObjectId> {
 

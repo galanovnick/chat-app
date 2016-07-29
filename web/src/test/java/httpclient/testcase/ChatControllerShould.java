@@ -70,6 +70,21 @@ public class ChatControllerShould {
     }
 
     @Test
+    public void provideAvailableChatList() {
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("token", token));
+
+        HttpResponse response = sendPost(baseUrl + "/chats", params, client);
+
+        if (response == null) {
+            fail("Failed due null response.");
+        }
+
+        assertEquals("Failed due incorrect response code.", 200,
+                response.getStatusLine().getStatusCode());
+    }
+
+    @Test
     public void handleChatCreation() {
         String responseContent = createNewChat(UUID.randomUUID().toString());
         Pattern pattern = Pattern.compile("\"isCreated\": \"(.+)\",");

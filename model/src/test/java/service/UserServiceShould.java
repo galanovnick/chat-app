@@ -28,7 +28,7 @@ public class UserServiceShould {
 
     @Before
     public void before() throws InvalidUserDataException {
-        if (userService.getAllAuthenticatedUsers().size() > 0
+        if (userService.getAllTokens().size() > 0
                 || userService.getAllRegisteredUsers().size() > 0) {
             fail("Repositories have to be empty.");
         }
@@ -58,7 +58,7 @@ public class UserServiceShould {
 
         boolean actual = userService.checkAuthentication(token).isPresent();
 
-        userService.terminateAuthentication(token);
+        userService.logout(token);
 
         assertTrue("Failed user authentication", actual);
     }

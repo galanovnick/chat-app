@@ -1,12 +1,9 @@
 package servlet;
 
-import controller.ChatController;
-import controller.LoginController;
-import controller.RegistrationController;
-import controller.UserMenuController;
+import controller.*;
 import handler.Handler;
-import handler.HandlerRegister;
-import handler.HandlerRegisterImpl;
+import handler.HandlerRegistry;
+import handler.HandlerRegistryImpl;
 import handler.UrlMethodPair;
 import result.ResultWriter;
 
@@ -19,14 +16,13 @@ import java.util.Optional;
 
 public class DispatcherServlet extends HttpServlet {
 
-    private final HandlerRegister handlerRegister =
-            HandlerRegisterImpl.getInstance();
+    private final HandlerRegistry handlerRegistry =
+            HandlerRegistryImpl.getInstance();
 
     public DispatcherServlet() {
-        handlerRegister.registerController(LoginController.class);
-        handlerRegister.registerController(RegistrationController.class);
-        handlerRegister.registerController(UserMenuController.class);
-        handlerRegister.registerController(ChatController.class);
+        handlerRegistry.registerController(LoginController.class);
+        handlerRegistry.registerController(RegistrationController.class);
+        handlerRegistry.registerController(ChatController.class);;
     }
 
     @Override
@@ -45,8 +41,11 @@ public class DispatcherServlet extends HttpServlet {
     private void handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
 
-        UrlMethodPair urlMethodPair = new UrlMethodPair(request.getServletPath(), request.getMethod());
-        Optional<Handler> handler = handlerRegister.getHandler(urlMethodPair);
+        UrlMethodPair urlMethodPair = new UrlMethodPair(
+                request.getServletPath(),
+                HttpRequestMethod.forName(request.getMethod()));
+
+        Optional<Handler> handler = handlerRegistry.getHandler(urlMethodPair);
         if (handler.isPresent()) {
             ResultWriter result = handler.get().processRequest(request, response);
             result.write(response);

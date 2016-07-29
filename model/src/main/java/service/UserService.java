@@ -23,11 +23,11 @@ public interface UserService {
 
     Collection<UserDto> getAllRegisteredUsers();
 
-    void terminateAuthentication(AuthenticationTokenDto user);
+    void logout(AuthenticationTokenDto user);
 
-    Collection<AuthenticationTokenDto> getAllAuthenticatedUsers();
+    Collection<AuthenticationTokenDto> getAllTokens();
 
     AuthenticationTokenDto login(UserName username, UserPassword password) throws AuthenticationException;
 
-    Optional<AuthenticationToken> checkAuthentication(AuthenticationTokenDto token);
+    Optional<AuthenticationTokenDto> checkAuthentication(AuthenticationTokenDto token);
 }

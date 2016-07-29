@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void terminateAuthentication(AuthenticationTokenDto user) {
+    public void logout(AuthenticationTokenDto user) {
         Optional<AuthenticationToken> token = tokenRepository.findByTokenString(user.getToken());
         if (token.isPresent()) {
             tokenRepository.delete(token.get().getId());
@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<AuthenticationTokenDto> getAllAuthenticatedUsers() {
+    public Collection<AuthenticationTokenDto> getAllTokens() {
         return tokenRepository.findAll().stream()
                 .map(token -> new AuthenticationTokenDto(token.getToken()))
                 .collect(Collectors.toList());
@@ -160,11 +160,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<AuthenticationToken> checkAuthentication(AuthenticationTokenDto tokenDto) {
+    public Optional<AuthenticationTokenDto> checkAuthentication(AuthenticationTokenDto tokenDto) {
 
         checkNotNull(tokenDto, "Token cannot be null");
 
-        return tokenRepository.findByTokenString(tokenDto.getToken());
+        Optional<AuthenticationToken> tokenEntity
+                = tokenRepository.findByTokenString(tokenDto.getToken());
+
+        if (tokenEntity.isPresent()) {
+            return Optional.of(new AuthenticationTokenDto(
+                    tokenEntity.get().getToken(),
+                    tokenEntity.get().getUserId()
+            ));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override

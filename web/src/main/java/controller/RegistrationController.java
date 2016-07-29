@@ -2,8 +2,8 @@ package controller;
 
 import entity.tiny.user.UserName;
 import entity.tiny.user.UserPassword;
-import handler.HandlerRegister;
-import handler.HandlerRegisterImpl;
+import handler.HandlerRegistry;
+import handler.HandlerRegistryImpl;
 import handler.UrlMethodPair;
 import result.JsonResult;
 import result.JsonResultWriter;
@@ -12,7 +12,7 @@ import service.UserService;
 import service.impl.UserServiceImpl;
 import service.impl.dto.RegistrationDto;
 
-import static controller.HttpResponseMethod.*;
+import static controller.HttpRequestMethod.*;
 
 public class RegistrationController
         extends AbstractChatApplicationController
@@ -26,7 +26,7 @@ public class RegistrationController
 
     private final UserService userService = UserServiceImpl.getInstance();
 
-    private final HandlerRegister handlerRegister = HandlerRegisterImpl.getInstance();
+    private final HandlerRegistry handlerRegistry = HandlerRegistryImpl.getInstance();
     private RegistrationController() {
         registerRegistrationGet();
         registerRegistrationPost();
@@ -35,7 +35,7 @@ public class RegistrationController
     private void registerRegistrationPost() {
         UrlMethodPair postUrlMethodPair = new UrlMethodPair("/register", POST);
 
-        handlerRegister.register(postUrlMethodPair, ((request, response) -> {
+        handlerRegistry.register(postUrlMethodPair, ((request, response) -> {
 
             JsonResult result = new JsonResult();
 
@@ -58,7 +58,7 @@ public class RegistrationController
         }));
     }
     private void registerRegistrationGet() {
-        handleGet("/register", handlerRegister);
+        handleGet("/register", handlerRegistry);
     }
     public static RegistrationController getInstance() {
         if (instance == null) {

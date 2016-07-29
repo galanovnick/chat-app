@@ -5,19 +5,19 @@ import java.io.IOException;
 
 public class JsonResultWriter implements ResultWriter {
 
-    private final JsonResult RESULT;
-    private final int RESPONSE_CODE;
+    private final JsonResult result;
+    private final int responseCode;
 
     public JsonResultWriter(JsonResult result, int responseCode) {
-        this.RESULT = result;
-        this.RESPONSE_CODE = responseCode;
+        this.result = result;
+        this.responseCode = responseCode;
     }
 
     @Override
     public void write(HttpServletResponse response) {
         try {
-            response.setStatus(RESPONSE_CODE);
-            response.getWriter().write(RESULT.getResult());
+            response.setStatus(responseCode);
+            response.getWriter().write(result.getResult());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

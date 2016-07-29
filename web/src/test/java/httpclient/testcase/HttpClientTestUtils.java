@@ -19,7 +19,7 @@ final class HttpClientTestUtils {
 
     private HttpClientTestUtils(){}
 
-    public static String getResponseContent(HttpResponse response) {
+    /*package*/ static String getResponseContent(HttpResponse response) {
         try {
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(response.getEntity().getContent()));
@@ -39,7 +39,7 @@ final class HttpClientTestUtils {
         return "";
     }
 
-    public static HttpResponse sendGet(String url, HttpClient client) {
+    /*package*/  static HttpResponse sendGet(String url, HttpClient client) {
         HttpGet request = new HttpGet(url);
         HttpResponse response = null;
         try {
@@ -51,7 +51,7 @@ final class HttpClientTestUtils {
         return response;
     }
 
-    public static HttpResponse sendPost(String url, List<NameValuePair> params, HttpClient client) {
+    /*package*/  static HttpResponse sendPost(String url, List<NameValuePair> params, HttpClient client) {
         HttpPost request = new HttpPost(url);
         request.setHeader("User-Agent", USER_AGENT);
 

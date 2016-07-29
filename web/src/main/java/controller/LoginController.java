@@ -1,9 +1,10 @@
 package controller;
 
+import entity.AuthenticationToken;
 import entity.tiny.user.UserName;
 import entity.tiny.user.UserPassword;
-import handler.HandlerRegister;
-import handler.HandlerRegisterImpl;
+import handler.HandlerRegistry;
+import handler.HandlerRegistryImpl;
 import handler.UrlMethodPair;
 import result.JsonResult;
 import result.JsonResultWriter;
@@ -12,7 +13,9 @@ import service.UserService;
 import service.impl.UserServiceImpl;
 import service.impl.dto.AuthenticationTokenDto;
 
-import static controller.HttpResponseMethod.POST;
+import java.util.Optional;
+
+import static controller.HttpRequestMethod.POST;
 
 public class LoginController
         extends AbstractChatApplicationController
@@ -26,16 +29,19 @@ public class LoginController
 
     private final UserService userService = UserServiceImpl.getInstance();
 
-    private final HandlerRegister handlerRegister = HandlerRegisterImpl.getInstance();
+    private final HandlerRegistry handlerRegistry = HandlerRegistryImpl.getInstance();
 
     private LoginController() {
         registerLoginGet();
         registerLoginPost();
+
+        registerUsernamePost();
+        registerUsernameGet();
     }
 
     private void registerLoginPost() {
         UrlMethodPair postUrlMethodPair = new UrlMethodPair("/login", POST);
-        handlerRegister.register(postUrlMethodPair, ((request, response) -> {
+        handlerRegistry.register(postUrlMethodPair, ((request, response) -> {
             JsonResult result = new JsonResult();
             AuthenticationTokenDto token;
 
@@ -55,7 +61,31 @@ public class LoginController
     }
 
     private void registerLoginGet() {
-        handleGet("/login", handlerRegister);
+        handleGet("/login", handlerRegistry);
+    }
+
+    private void registerUsernameGet() {
+        handleGet("/username", handlerRegistry);
+    }
+
+    private void registerUsernamePost() {
+        UrlMethodPair postUsernameRequest
+                = new UrlMethodPair("/username", POST);
+        handlerRegistry.register(postUsernameRequest, ((request, response) -> {
+            Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
+                    new AuthenticationTokenDto(request.getParameter("token"))
+            );
+
+            if (token.isPresent()) {
+                JsonResult result = new JsonResult();
+                result.put("username",
+                        userService.getUser(token.get().getUserId())
+                                .getUsername());
+                return new JsonResultWriter(result, 200);
+            } else {
+                return authenticationRequiredErrorWriter();
+            }
+        }));
     }
 
     public static LoginController getInstance() {

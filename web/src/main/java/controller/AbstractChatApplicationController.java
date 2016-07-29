@@ -1,18 +1,18 @@
 package controller;
 
-import handler.HandlerRegister;
+import handler.HandlerRegistry;
 import handler.UrlMethodPair;
 import result.ResultWriter;
 
 import java.io.IOException;
 
-import static controller.HttpResponseMethod.GET;
+import static controller.HttpRequestMethod.GET;
 
 abstract class AbstractChatApplicationController implements Controller {
 
-    void handleGet(String url, HandlerRegister handlerRegister) {
+    void handleGet(String url, HandlerRegistry handlerRegistry) {
         UrlMethodPair createChat = new UrlMethodPair(url, GET);
-        handlerRegister.register(createChat, ((request, response) -> {
+        handlerRegistry.register(createChat, ((request, response) -> {
             try {
                 request.getRequestDispatcher("/").forward(request, response);
                 return null;
