@@ -1,5 +1,6 @@
 package service.impl;
 
+import com.google.common.reflect.Parameter;
 import entity.AuthenticationToken;
 import entity.User;
 import entity.tiny.user.UserId;
@@ -12,7 +13,7 @@ import repository.UserRepository;
 import service.AuthenticationException;
 import service.InvalidUserDataException;
 import service.UserService;
-import service.impl.dto.AuthenticatedUserDto;
+import service.impl.dto.AuthenticationTokenDto;
 import service.impl.dto.RegistrationDto;
 import service.impl.dto.UserDto;
 
@@ -20,7 +21,6 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthenticatedUserDto login(UserName username, UserPassword password)
+    public AuthenticationTokenDto login(UserName username, UserPassword password)
             throws AuthenticationException {
 
         checkNotNull(username, "Username cannot be null");
@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
                 log.debug(String.format("User with username = '%s' successfully authenticated.",
                         username.value()));
             }
-            return new AuthenticatedUserDto(token.getToken(), new UserId(token.getUserId()));
+            return new AuthenticationTokenDto(token.getToken());
         }
 
         if (log.isDebugEnabled()) {
@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void terminateAuthentication(AuthenticatedUserDto user) {
+    public void terminateAuthentication(AuthenticationTokenDto user) {
         Optional<AuthenticationToken> token = tokenRepository.findByTokenString(user.getToken());
         if (token.isPresent()) {
             tokenRepository.delete(token.get().getId());
@@ -147,9 +147,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<AuthenticatedUserDto> getAllAuthenticatedUsers() {
+    public Collection<AuthenticationTokenDto> getAllAuthenticatedUsers() {
         return tokenRepository.findAll().stream()
-                .map(token -> new AuthenticatedUserDto(token.getToken(), new UserId(token.getUserId())))
+                .map(token -> new AuthenticationTokenDto(token.getToken()))
                 .collect(Collectors.toList());
     }
 
@@ -161,18 +161,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isUserAuthenticated(UserId userId, String tokenString) {
+    public Optional<AuthenticationToken> checkAuthentication(AuthenticationTokenDto tokenDto) {
 
-        checkNotNull(userId, "Token cannot be null");
-        checkNotNull(tokenString, "Token cannot be null");
-        checkArgument(userId.value() > -1, "User id cannot be negative.");
-        checkArgument(!tokenString.equals(""), "Token string cannot be empty.");
+        checkNotNull(tokenDto, "Token cannot be null");
 
-        Optional<AuthenticationToken> token = tokenRepository.findByTokenString(tokenString);
+        return tokenRepository.findByTokenString(tokenDto.getToken());
+    }
 
-        return token.isPresent()
-                && token.get()
-                    .getUserId().equals(userId.value());
+    @Override
+    public UserDto getUser(UserId userId) {
+        Optional<User> user = userRepository.findOne(userId);
+        if (user.isPresent()) {
+            return new UserDto(new UserName(user.get().getUsername()));
+        }
+        throw new IllegalStateException("Attempt to get user by invalid id.");
     }
 
     private UserServiceImpl() {

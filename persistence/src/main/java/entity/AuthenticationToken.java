@@ -1,6 +1,7 @@
 package entity;
 
 import entity.tiny.user.AuthenticationTokenId;
+import entity.tiny.user.UserId;
 
 public class AuthenticationToken implements Entity<AuthenticationTokenId>{
 
@@ -36,11 +37,11 @@ public class AuthenticationToken implements Entity<AuthenticationTokenId>{
         this.token = token;
     }
 
-    public Long getUserId() {
-        return userId;
+    public UserId getUserId() {
+        return new UserId(userId);
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserId(UserId userId) {
+        this.userId = userId.value();
     }
 }

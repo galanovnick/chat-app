@@ -9,9 +9,12 @@ import result.JSONResultWriter;
 import service.AuthenticationException;
 import service.UserService;
 import service.impl.UserServiceImpl;
-import service.impl.dto.AuthenticatedUserDto;
+import service.impl.dto.AuthenticationTokenDto;
 
 import java.io.IOException;
+
+import static controller.HttpResponseMethod.GET;
+import static controller.HttpResponseMethod.POST;
 
 public class LoginController implements Controller{
     private static LoginController instance;
@@ -23,13 +26,13 @@ public class LoginController implements Controller{
     private final UserService userService = UserServiceImpl.getInstance();
 
     private LoginController() {
-        UrlMethodPair postUrlMethodPair = new UrlMethodPair("/login", "POST");
+        UrlMethodPair postUrlMethodPair = new UrlMethodPair("/login", POST);
 
         HandlerRegister handlerRegister = HandlerRegisterImpl.getInstance();
 
         handlerRegister.register(postUrlMethodPair, ((request, response) -> {
             JSONResultWriter result = new JSONResultWriter();
-            AuthenticatedUserDto user;
+            AuthenticationTokenDto user;
 
             try {
                 user = userService.login(new UserName(request.getParameter("username")),
@@ -44,7 +47,7 @@ public class LoginController implements Controller{
             return result;
         }));
 
-        UrlMethodPair getUrlMethodPair = new UrlMethodPair("/login", "GET");
+        UrlMethodPair getUrlMethodPair = new UrlMethodPair("/login", GET);
         handlerRegister.register(getUrlMethodPair, ((request, response) -> {
             try {
                 request.getRequestDispatcher("/").forward(request, response);

@@ -1,9 +1,16 @@
 package handler;
 
+import controller.HttpResponseMethod;
+
 public class UrlMethodPair {
 
     private final String url;
     private final String method;
+
+    public UrlMethodPair(String url, HttpResponseMethod method) {
+        this.url = url;
+        this.method = method.name();
+    }
 
     public UrlMethodPair(String url, String method) {
         this.url = url;

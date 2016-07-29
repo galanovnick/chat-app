@@ -13,7 +13,7 @@ import service.impl.dto.RegistrationDto;
 
 import java.io.IOException;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static controller.HttpResponseMethod.*;
 
 public class RegistrationController implements Controller{
 
@@ -28,7 +28,7 @@ public class RegistrationController implements Controller{
     private RegistrationController() {
         HandlerRegister handlerRegister = HandlerRegisterImpl.getInstance();
 
-        UrlMethodPair postUrlMethodPair = new UrlMethodPair("/register", "POST");
+        UrlMethodPair postUrlMethodPair = new UrlMethodPair("/register", POST);
 
         handlerRegister.register(postUrlMethodPair, ((request, response) -> {
 
@@ -52,7 +52,7 @@ public class RegistrationController implements Controller{
             return result;
         }));
 
-        UrlMethodPair getUrlMethodPair = new UrlMethodPair("/register", "GET");
+        UrlMethodPair getUrlMethodPair = new UrlMethodPair("/register", GET);
         handlerRegister.register(getUrlMethodPair, ((request, response) -> {
             try {
                 request.getRequestDispatcher("/").forward(request, response);
