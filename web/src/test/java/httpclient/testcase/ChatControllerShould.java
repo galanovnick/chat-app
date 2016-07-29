@@ -71,37 +71,86 @@ public class ChatControllerShould {
 
     @Test
     public void handleChatCreation() {
-        createNewChat(UUID.randomUUID().toString());
+        String responseContent = createNewChat(UUID.randomUUID().toString());
+        Pattern pattern = Pattern.compile("\"isCreated\": \"(.+)\",");
+        Matcher matcher = pattern.matcher(responseContent);
+        if (!matcher.find() || !matcher.group(1).equals("true")) {
+            fail("Failed due incorrect response body.");
+        }
+    }
+
+    @Test
+    public void handleChatWithEmptyNameCreation() {
+        String expected = "{\"isCreated\": \"false\",\"message\": \"Chat name cannot be empty.\"}";
+
+        String actual = createNewChat("");
+
+        assertEquals("Failed due incorrect response content.", expected, actual);
+    }
+
+    @Test
+    public void handleChatWithInvalidNameCreation() {
+        String expected = "{\"isCreated\": \"false\"," +
+                "\"message\": \"Chat name cannot start with whitespace.\"}";
+
+        String actual = createNewChat("   ");
+
+        assertEquals("Failed due incorrect response content.", expected, actual);
     }
 
     @Test
     public void handleUserJoin() {
-        ChatId chatId = createNewChat(UUID.randomUUID().toString());
+        String newChatResponse = createNewChat(UUID.randomUUID().toString());
+        Pattern pattern = Pattern.compile("\"chatId\": \"(.*)\"");
+        Matcher matcher = pattern.matcher(newChatResponse);
+        if (!matcher.find()) {
+            fail("Failed due incorrect response content.");
+        }
+        ChatId chatId = new ChatId(Long.parseLong(matcher.group(1)));
         joinChat(chatId);
     }
 
     @Test
     public void handleUserLeave() {
-        ChatId chatId = createNewChat(UUID.randomUUID().toString());
+        String newChatResponse = createNewChat(UUID.randomUUID().toString());
+        Pattern pattern = Pattern.compile("\"chatId\": \"(.*)\"");
+        Matcher matcher = pattern.matcher(newChatResponse);
+        if (!matcher.find()) {
+            fail("Failed due incorrect response content.");
+        }
+        ChatId chatId = new ChatId(Long.parseLong(matcher.group(1)));
         joinChat(chatId);
         leaveChat(chatId);
     }
 
     @Test
     public void handleMessageAddition() {
-        ChatId chatId = createNewChat(UUID.randomUUID().toString());
+        String newChatResponse = createNewChat(UUID.randomUUID().toString());
+        Pattern pattern = Pattern.compile("\"chatId\": \"(.+)\"");
+        Matcher matcher = pattern.matcher(newChatResponse);
+        if (!matcher.find()) {
+            fail("Failed due incorrect response content.");
+        }
+        ChatId chatId = new ChatId(Long.parseLong(matcher.group(1)));
         joinChat(chatId);
         addMessage(chatId, "Hi!");
     }
 
     @Test
     public void provideMessageList() {
-        ChatId chatId = createNewChat(UUID.randomUUID().toString());
+        String newChatResponse = createNewChat(UUID.randomUUID().toString());
+        Pattern pattern = Pattern.compile("\"chatId\": \"(.*)\"");
+        Matcher matcher = pattern.matcher(newChatResponse);
+        if (!matcher.find()) {
+            fail("Failed due incorrect response content.");
+        }
+        ChatId chatId = new ChatId(Long.parseLong(matcher.group(1)));
         joinChat(chatId);
         addMessage(chatId, "Hi!");
         addMessage(chatId, "Sup?");
 
-        String expected = "{\"messages\": [\"Hi!\", \"Sup?\"]}";
+        String expected = String.format("{\"messages\": [\"%s: Hi!\",\"%s: Sup?\"]}",
+                username, username);
         String actual = getChatMessages(chatId);
 
         assertEquals("Failed due incorrect message list.", expected, actual);
@@ -113,7 +162,7 @@ public class ChatControllerShould {
         params.add(new BasicNameValuePair("token", token));
         params.add(new BasicNameValuePair("chatId", chatId.value().toString()));
 
-        HttpResponse messagesResponse = sendPost(baseUrl + "/chat/messages", params, client);
+        HttpResponse messagesResponse = sendPost(baseUrl + "chat/messages", params, client);
         if (messagesResponse == null) {
             fail("Failed due null response.");
         }
@@ -131,7 +180,7 @@ public class ChatControllerShould {
         params.add(new BasicNameValuePair("username", username));
         params.add(new BasicNameValuePair("message", message));
 
-        HttpResponse addMessageResponse = sendPost(baseUrl + "/chat/add-message", params, client);
+        HttpResponse addMessageResponse = sendPost(baseUrl + "chat/add-message", params, client);
         if (addMessageResponse == null) {
             fail("Failed due null response.");
         }
@@ -151,7 +200,7 @@ public class ChatControllerShould {
         params.add(new BasicNameValuePair("token", token));
         params.add(new BasicNameValuePair("chatId", chatId.value().toString()));
 
-        HttpResponse leaveChatResponse = sendPost(baseUrl + "/chat/leave", params, client);
+        HttpResponse leaveChatResponse = sendPost(baseUrl + "chat/leave", params, client);
         if (leaveChatResponse == null) {
             fail("Failed due null response.");
         }
@@ -159,7 +208,7 @@ public class ChatControllerShould {
         assertEquals("Failed due incorrect response code.",
                 200, leaveChatResponse.getStatusLine().getStatusCode());
 
-        String expected = "{\"isLeft\": \"true\"}";
+        String expected = "{\"isLeft\": \"true\",\"message\": \"User successfully left.\"}";
 
         String actual = getResponseContent(leaveChatResponse);
 
@@ -171,7 +220,7 @@ public class ChatControllerShould {
         params.add(new BasicNameValuePair("token", token));
         params.add(new BasicNameValuePair("chatId", chatId.value().toString()));
 
-        HttpResponse joinChatResponse = sendPost(baseUrl + "/chat/join", params, client);
+        HttpResponse joinChatResponse = sendPost(baseUrl + "chat/join", params, client);
         if (joinChatResponse == null) {
             fail("Failed due null response.");
         }
@@ -179,34 +228,23 @@ public class ChatControllerShould {
         assertEquals("Failed due incorrect response code.",
                 200, joinChatResponse.getStatusLine().getStatusCode());
 
-        String expected = "{\"isJoined\": \"true\"}";
+        String expected = "{\"isJoined\": \"true\",\"message\": \"User successfully joined.\"}";
 
         String actual = getResponseContent(joinChatResponse);
 
         assertEquals("Failed due incorrect response content.", expected, actual);
     }
 
-    private ChatId createNewChat(String chatName) {
+    private String createNewChat(String chatName) {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("token", token));
         params.add(new BasicNameValuePair("chatName", chatName));
 
-        HttpResponse newChatResponse = sendPost(baseUrl + "/chat/new", params, client);
+        HttpResponse newChatResponse = sendPost(baseUrl + "chat/new", params, client);
         if (newChatResponse == null) {
             fail("Failed due null response.");
         }
 
-        assertEquals("Failed due incorrect response code.",
-                200, newChatResponse.getStatusLine().getStatusCode());
-
-        String content = getResponseContent(newChatResponse);
-        Pattern pattern = Pattern.compile("\"chatId\": \"(.*)\"");
-        Matcher matcher = pattern.matcher(content);
-
-        if (!matcher.find()) {
-            fail("Failed due incorrect response content.");
-        }
-
-        return new ChatId(Long.parseLong(matcher.group(0)));
+        return getResponseContent(newChatResponse);
     }
 }

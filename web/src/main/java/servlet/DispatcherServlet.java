@@ -1,5 +1,6 @@
 package servlet;
 
+import controller.ChatController;
 import controller.LoginController;
 import controller.RegistrationController;
 import controller.UserMenuController;
@@ -26,6 +27,7 @@ public class DispatcherServlet extends HttpServlet {
         handlerRegister.registerController(LoginController.class);
         handlerRegister.registerController(RegistrationController.class);
         handlerRegister.registerController(UserMenuController.class);
+        handlerRegister.registerController(ChatController.class);
     }
 
     @Override
