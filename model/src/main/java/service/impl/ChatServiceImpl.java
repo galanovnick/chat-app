@@ -59,7 +59,7 @@ public class ChatServiceImpl implements ChatService {
         checkNotNull(chatId, "Chat id cannot be null.");
         Optional<Chat> chat = chatRepository.findOne(chatId);
         if (chat.isPresent()) {
-            return new ChatDto(chat.get().getChatName(), chat.get().getCreatorId());
+            return new ChatDto(chat.get().getId(), chat.get().getChatName(), chat.get().getCreatorId());
         }
         throw new IllegalStateException("Attempt to get chat by invalid id.");
     }
@@ -67,7 +67,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public Collection<ChatDto> getAllChats() {
         return chatRepository.findAll().stream()
-                .map(chat -> new ChatDto(chat.getChatName(), chat.getCreatorId()))
+                .map(chat -> new ChatDto(chat.getId() ,chat.getChatName(), chat.getCreatorId()))
                 .collect(Collectors.toList());
     }
 

@@ -41,7 +41,7 @@ public class UserMenuControllerShould {
         String expectedContent = "{\"isRegistered\": \"true\"," +
                 "\"message\": \"User has been successfully registered.\"}";
 
-        String actualContent = getResponseContent(registrationResponse, client);
+        String actualContent = getResponseContent(registrationResponse);
 
         assertEquals("Failed on user registration post request.",
                 expectedContent, actualContent);
@@ -57,7 +57,7 @@ public class UserMenuControllerShould {
         assertEquals("Failed on user authentication.", 200,
                 authenticationResponse.getStatusLine().getStatusCode());
 
-        String responseContent = getResponseContent(authenticationResponse, client);
+        String responseContent = getResponseContent(authenticationResponse);
 
         Pattern pattern = Pattern.compile("\"token\": \"(.+)\"");
         Matcher matcher = pattern.matcher(responseContent);
@@ -71,7 +71,7 @@ public class UserMenuControllerShould {
     }
 
     @Test
-    public void provideAuthenticatedUserNicknameInJSON() {
+    public void provideAuthenticatedUserNameInJson() {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("token", token));
 
@@ -86,7 +86,28 @@ public class UserMenuControllerShould {
 
         String expected = String.format("{\"username\": \"%s\"}", username);
 
-        String actual = getResponseContent(response, client);
+        String actual = getResponseContent(response);
+
+        assertEquals("Failed due incorrect response content.", expected, actual);
+    }
+
+    @Test
+    public void provideAvailableChatListInJson() {
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("token", token));
+
+        HttpResponse response = sendPost(baseUrl + "/menu/chats", params, client);
+
+        if (response == null) {
+            fail("Failed due null response.");
+        }
+
+        assertEquals("Failed due incorrect response code.", 200,
+                response.getStatusLine().getStatusCode());
+
+        String expected = "{\"chats\": []}";
+
+        String actual = getResponseContent(response);
 
         assertEquals("Failed due incorrect response content.", expected, actual);
     }

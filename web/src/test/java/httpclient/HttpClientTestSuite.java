@@ -1,8 +1,6 @@
 package httpclient;
 
-import httpclient.testcase.DefaultControllerShould;
-import httpclient.testcase.LoginControllerShould;
-import httpclient.testcase.RegistrationControllerShould;
+import httpclient.testcase.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -11,7 +9,9 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     DefaultControllerShould.class,
     RegistrationControllerShould.class,
-    LoginControllerShould.class
+    LoginControllerShould.class,
+    UserMenuControllerShould.class,
+    ChatControllerShould.class
 })
 public class HttpClientTestSuite {
 }

@@ -5,7 +5,8 @@ import entity.tiny.user.UserPassword;
 import handler.HandlerRegister;
 import handler.HandlerRegisterImpl;
 import handler.UrlMethodPair;
-import result.JSONResultWriter;
+import result.JsonResult;
+import result.JsonResultWriter;
 import service.AuthenticationException;
 import service.UserService;
 import service.impl.UserServiceImpl;
@@ -25,28 +26,35 @@ public class LoginController implements Controller{
 
     private final UserService userService = UserServiceImpl.getInstance();
 
+    private final HandlerRegister handlerRegister = HandlerRegisterImpl.getInstance();
+
     private LoginController() {
+        registerLoginGet();
+        registerLoginPost();
+    }
+
+    private void registerLoginPost() {
         UrlMethodPair postUrlMethodPair = new UrlMethodPair("/login", POST);
-
-        HandlerRegister handlerRegister = HandlerRegisterImpl.getInstance();
-
         handlerRegister.register(postUrlMethodPair, ((request, response) -> {
-            JSONResultWriter result = new JSONResultWriter();
-            AuthenticationTokenDto user;
+            JsonResult result = new JsonResult();
+            AuthenticationTokenDto token;
 
             try {
-                user = userService.login(new UserName(request.getParameter("username")),
+                token = userService.login(new UserName(request.getParameter("username")),
                         new UserPassword(request.getParameter("password")));
             } catch (AuthenticationException e) {
                 result.put("isAuthenticated", "false");
                 result.put("message", e.getMessage());
-                return result;
+                return new JsonResultWriter(result, 555);
             }
             result.put("isAuthenticated", "true");
-            result.put("token", user.getToken());
-            return result;
-        }));
+            result.put("token", token.getToken());
 
+            return new JsonResultWriter(result, 200);
+        }));
+    }
+
+    private void registerLoginGet() {
         UrlMethodPair getUrlMethodPair = new UrlMethodPair("/login", GET);
         handlerRegister.register(getUrlMethodPair, ((request, response) -> {
             try {

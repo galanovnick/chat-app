@@ -35,8 +35,8 @@ public class LoginControllerShould {
 
         String expected = "{\"isAuthenticated\": \"false\"," +
                 "\"message\": \"Invalid username or password.\"}";
-        String actual = getResponseContent(response, client);
-        assertEquals("Failed unregistered user authentication.", 200,
+        String actual = getResponseContent(response);
+        assertEquals("Failed unregistered user authentication.", 555,
                 response.getStatusLine().getStatusCode());
         assertEquals("Failed unregistered user authentication.", expected, actual);
     }
@@ -55,9 +55,9 @@ public class LoginControllerShould {
 
         String expected = "{\"isAuthenticated\": \"false\"," +
                 "\"message\": \"Fields cannot be empty.\"}";
-        String actual = getResponseContent(response, client);
+        String actual = getResponseContent(response);
 
-        assertEquals("Failed unregistered user authentication.", 200,
+        assertEquals("Failed unregistered user authentication.", 555,
                 response.getStatusLine().getStatusCode());
         assertEquals("Failed unregistered user authentication.", expected, actual);
     }
@@ -76,7 +76,7 @@ public class LoginControllerShould {
             fail("Failed due null response.");
         }
 
-        String responseContent = getResponseContent(response, client);
+        String responseContent = getResponseContent(response);
         String successfulRegistrationResult = "{\"isRegistered\": \"true\"," +
                 "\"message\": \"User has been successfully registered.\"}";
         if (!responseContent.equals(successfulRegistrationResult)) {

@@ -32,7 +32,7 @@ public class RegistrationControllerShould {
         String expectedContent = "{\"isRegistered\": \"true\"," +
                 "\"message\": \"User has been successfully registered.\"}";
 
-        String actualContent = getResponseContent(response, client);
+        String actualContent = getResponseContent(response);
 
         assertEquals("Failed on user registration post request.",
                 expectedContent, actualContent);
@@ -50,7 +50,7 @@ public class RegistrationControllerShould {
         String expectedContent = "{\"isRegistered\": \"false\"," +
                 "\"message\": \"Passwords do not match.\"}";
 
-        String actualContent = getResponseContent(response, client);
+        String actualContent = getResponseContent(response);
 
         assertEquals("Failed on user registration post request.",
                 expectedContent, actualContent);
@@ -68,7 +68,7 @@ public class RegistrationControllerShould {
         String expectedContent = "{\"isRegistered\": \"false\"," +
                 "\"message\": \"Fields cannot be empty.\"}";
 
-        String actualContent = getResponseContent(response, client);
+        String actualContent = getResponseContent(response);
 
         assertEquals("Failed on user registration post request.",
                 expectedContent, actualContent);
@@ -87,7 +87,7 @@ public class RegistrationControllerShould {
         String expectedContent = "{\"isRegistered\": \"false\"," +
                 "\"message\": \"User with such name already exists.\"}";
 
-        String actualContent = getResponseContent(response, client);
+        String actualContent = getResponseContent(response);
 
         assertEquals("Failed on user registration post request.",
                 expectedContent, actualContent);

@@ -19,7 +19,7 @@ public final class HttpClientTestUtils {
 
     private HttpClientTestUtils(){}
 
-    public static String getResponseContent(HttpResponse response, HttpClient client) {
+    public static String getResponseContent(HttpResponse response) {
         try {
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(response.getEntity().getContent()));
@@ -34,8 +34,9 @@ public final class HttpClientTestUtils {
         } catch (IOException e) {
             e.printStackTrace();
             fail("Unexpected exception");
+
         }
-        return null;
+        return "";
     }
 
     public static HttpResponse sendGet(String url, HttpClient client) {
