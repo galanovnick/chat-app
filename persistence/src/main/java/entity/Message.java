@@ -47,8 +47,9 @@ public class Message implements Entity<MessageId> {
         Message message = (Message) o;
 
         if (id != null ? !id.equals(message.id) : message.id != null) return false;
-        if (username != null ? !username.equals(message.username) : message.username != null) return false;
-        return text != null ? text.equals(message.text) : message.text == null;
+        return username != null ? username.equals(message.username)
+                : message.username == null && (text != null ? text.equals(message.text)
+                : message.text == null);
 
     }
 

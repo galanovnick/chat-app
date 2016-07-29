@@ -47,8 +47,9 @@ public class ChatDto {
         ChatDto chatDto = (ChatDto) o;
 
         if (chatId != null ? !chatId.equals(chatDto.chatId) : chatDto.chatId != null) return false;
-        if (chatName != null ? !chatName.equals(chatDto.chatName) : chatDto.chatName != null) return false;
-        return ownerId != null ? ownerId.equals(chatDto.ownerId) : chatDto.ownerId == null;
+        return chatName != null ? chatName.equals(chatDto.chatName)
+                : chatDto.chatName == null && (ownerId != null ? ownerId.equals(chatDto.ownerId)
+                : chatDto.ownerId == null);
 
     }
 

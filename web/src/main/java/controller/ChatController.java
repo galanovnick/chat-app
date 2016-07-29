@@ -3,7 +3,6 @@ package controller;
 import entity.AuthenticationToken;
 import entity.Message;
 import entity.tiny.chat.ChatId;
-import entity.tiny.user.UserId;
 import handler.HandlerRegister;
 import handler.HandlerRegisterImpl;
 import handler.UrlMethodPair;
@@ -18,17 +17,16 @@ import service.impl.UserServiceImpl;
 import service.impl.dto.AuthenticationTokenDto;
 import service.impl.dto.MessageDto;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static controller.HttpResponseMethod.GET;
 import static controller.HttpResponseMethod.POST;
 
-public class ChatController implements Controller {
+public class ChatController
+        extends AbstractChatApplicationController
+        implements Controller {
     private static ChatController instance;
 
     private final ChatService chatService = ChatServiceImpl.getInstance();
@@ -58,7 +56,7 @@ public class ChatController implements Controller {
     }
 
     private void registerMessagesGet() {
-        handleGet("/chat/messages");
+        handleGet("/chat/messages", handlerRegister);
     }
 
     private void registerMessagesPost() {
@@ -83,18 +81,13 @@ public class ChatController implements Controller {
                 result.put("messages", messagesList.toArray(new String[messagesList.size()]));
                 return new JsonResultWriter(result, 200);
             } else {
-                try {
-                    request.getRequestDispatcher("/").forward(request, response);
-                    return null;
-                } catch (IOException e) {
-                    throw new IllegalStateException(e);
-                }
+                return authenticationRequiredErrorWriter();
             }
         }));
     }
 
     private void registerAddMessageGet() {
-        handleGet("/chat/add-message");
+        handleGet("/chat/add-message", handlerRegister);
     }
 
     private void registerAddMessagePost() {
@@ -116,18 +109,13 @@ public class ChatController implements Controller {
                 result.put("isMessageAdded", "true");
                 return new JsonResultWriter(result, 200);
             } else {
-                try {
-                    request.getRequestDispatcher("/").forward(request, response);
-                    return null;
-                } catch (IOException e) {
-                    throw new IllegalStateException(e);
-                }
+                return authenticationRequiredErrorWriter();
             }
         }));
     }
 
     private void registerLeaveUserGet() {
-        handleGet("/chat/leave");
+        handleGet("/chat/leave", handlerRegister);
     }
 
     private void registerLeaveUserPost() {
@@ -148,18 +136,13 @@ public class ChatController implements Controller {
                 result.put("message", "User successfully left.");
                 return new JsonResultWriter(result, 200);
             } else {
-                try {
-                    request.getRequestDispatcher("/").forward(request, response);
-                    return null;
-                } catch (IOException e) {
-                    throw new IllegalStateException(e);
-                }
+                return authenticationRequiredErrorWriter();
             }
         }));
     }
 
     private void registerJoinUserGet() {
-        handleGet("/chat/join");
+        handleGet("/chat/join", handlerRegister);
     }
 
     private void registerJoinUserPost() {
@@ -186,18 +169,13 @@ public class ChatController implements Controller {
                     return new JsonResultWriter(result, 555);
                 }
             } else {
-                try {
-                    request.getRequestDispatcher("/").forward(request, response);
-                    return null;
-                } catch (IOException e) {
-                    throw new IllegalStateException(e);
-                }
+                return authenticationRequiredErrorWriter();
             }
         }));
     }
 
     private void registerCreateChatGet() {
-        handleGet("/chat/new");
+        handleGet("/chat/new", handlerRegister);
     }
 
     private void registerCreateChatPost() {
@@ -225,24 +203,7 @@ public class ChatController implements Controller {
                     return new JsonResultWriter(result, 555);
                 }
             } else {
-                try {
-                    request.getRequestDispatcher("/").forward(request, response);
-                    return null;
-                } catch (IOException e) {
-                    throw new IllegalStateException(e);
-                }
-            }
-        }));
-    }
-
-    private void handleGet(String url) {
-        UrlMethodPair createChat = new UrlMethodPair(url, GET);
-        handlerRegister.register(createChat, ((request, response) -> {
-            try {
-                request.getRequestDispatcher("/").forward(request, response);
-                return null;
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
+                return authenticationRequiredErrorWriter();
             }
         }));
     }

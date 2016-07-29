@@ -11,15 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static httpclient.HttpClientTestUtils.getResponseContent;
-import static httpclient.HttpClientTestUtils.sendPost;
+import static httpclient.testcase.HttpClientTestUtils.getResponseContent;
+import static httpclient.testcase.HttpClientTestUtils.sendPost;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class LoginControllerShould {
 
     private final String baseUrl = "http://localhost:8080/login";
-    private HttpClient client = HttpClientBuilder.create().build();
+    private final HttpClient client = HttpClientBuilder.create().build();
 
     @Test
     public void handleUnregisteredUserAuthentication() {

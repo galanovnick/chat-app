@@ -12,12 +12,12 @@ import service.UserService;
 import service.impl.UserServiceImpl;
 import service.impl.dto.AuthenticationTokenDto;
 
-import java.io.IOException;
-
-import static controller.HttpResponseMethod.GET;
 import static controller.HttpResponseMethod.POST;
 
-public class LoginController implements Controller{
+public class LoginController
+        extends AbstractChatApplicationController
+        implements Controller{
+
     private static LoginController instance;
 
     static {
@@ -55,15 +55,7 @@ public class LoginController implements Controller{
     }
 
     private void registerLoginGet() {
-        UrlMethodPair getUrlMethodPair = new UrlMethodPair("/login", GET);
-        handlerRegister.register(getUrlMethodPair, ((request, response) -> {
-            try {
-                request.getRequestDispatcher("/").forward(request, response);
-                return null;
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
-            }
-        }));
+        handleGet("/login", handlerRegister);
     }
 
     public static LoginController getInstance() {

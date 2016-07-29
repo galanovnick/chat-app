@@ -1,4 +1,4 @@
-package httpclient;
+package httpclient.testcase;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -15,7 +15,7 @@ import java.util.List;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 import static org.junit.Assert.fail;
 
-public final class HttpClientTestUtils {
+final class HttpClientTestUtils {
 
     private HttpClientTestUtils(){}
 

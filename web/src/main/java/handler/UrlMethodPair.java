@@ -32,8 +32,9 @@ public class UrlMethodPair {
 
         UrlMethodPair that = (UrlMethodPair) o;
 
-        if (url != null ? !url.equals(that.url) : that.url != null) return false;
-        return method != null ? method.equals(that.method) : that.method == null;
+        return url != null ? url.equals(that.url)
+                : that.url == null && (method != null ? method.equals(that.method)
+                : that.method == null);
 
     }
 

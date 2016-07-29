@@ -3,14 +3,13 @@ package repository;
 import entity.Chat;
 import entity.tiny.chat.ChatId;
 
-import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class ChatRepository extends InMemoryRepository<Chat, ChatId> {
 
     private static ChatRepository instance;
 
-    private AtomicLong idCounter = new AtomicLong(0L);
+    private final AtomicLong idCounter = new AtomicLong(0L);
 
     public boolean isChatExists(String chatName) {
         for (Chat chat : entries.values()) {

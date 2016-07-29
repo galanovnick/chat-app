@@ -2,15 +2,12 @@ package service;
 
 import entity.Message;
 import entity.tiny.chat.ChatId;
-import entity.tiny.chat.MessageId;
 import entity.tiny.user.UserId;
-import entity.tiny.user.UserName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import service.impl.ChatServiceImpl;
 import service.impl.dto.MessageDto;
-import service.impl.dto.UserDto;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -23,7 +20,7 @@ public class ChatServiceShould {
     private final ChatService chatService = ChatServiceImpl.getInstance();
 
     private ChatId chatId;
-    private String chatName = UUID.randomUUID().toString();
+    private final String chatName = UUID.randomUUID().toString();
 
     @Before
     public void before() {

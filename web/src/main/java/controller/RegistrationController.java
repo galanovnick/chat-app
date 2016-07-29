@@ -12,11 +12,11 @@ import service.UserService;
 import service.impl.UserServiceImpl;
 import service.impl.dto.RegistrationDto;
 
-import java.io.IOException;
-
 import static controller.HttpResponseMethod.*;
 
-public class RegistrationController implements Controller{
+public class RegistrationController
+        extends AbstractChatApplicationController
+        implements Controller{
 
     private static RegistrationController instance;
 
@@ -58,15 +58,7 @@ public class RegistrationController implements Controller{
         }));
     }
     private void registerRegistrationGet() {
-        UrlMethodPair getUrlMethodPair = new UrlMethodPair("/register", GET);
-        handlerRegister.register(getUrlMethodPair, ((request, response) -> {
-            try {
-                request.getRequestDispatcher("/").forward(request, response);
-                return null;
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
-            }
-        }));
+        handleGet("/register", handlerRegister);
     }
     public static RegistrationController getInstance() {
         if (instance == null) {

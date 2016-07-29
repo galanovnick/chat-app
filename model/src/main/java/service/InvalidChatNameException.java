@@ -2,7 +2,7 @@ package service;
 
 public class InvalidChatNameException extends Exception {
 
-    private String message;
+    private final String message;
 
     public InvalidChatNameException(String message) {
         super(message);

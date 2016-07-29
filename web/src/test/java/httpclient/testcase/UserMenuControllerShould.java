@@ -14,15 +14,15 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static httpclient.HttpClientTestUtils.getResponseContent;
-import static httpclient.HttpClientTestUtils.sendPost;
+import static httpclient.testcase.HttpClientTestUtils.getResponseContent;
+import static httpclient.testcase.HttpClientTestUtils.sendPost;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class UserMenuControllerShould {
 
     private final String baseUrl = "http://localhost:8080/";
-    private HttpClient client = HttpClientBuilder.create().build();
+    private final HttpClient client = HttpClientBuilder.create().build();
 
     private final String username = UUID.randomUUID().toString();
     private String token;

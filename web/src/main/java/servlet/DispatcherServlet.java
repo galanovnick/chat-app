@@ -19,7 +19,6 @@ import java.util.Optional;
 
 public class DispatcherServlet extends HttpServlet {
 
-    //TODO: response code 555 - business logic problem | not 200! | mb 500?
     private final HandlerRegister handlerRegister =
             HandlerRegisterImpl.getInstance();
 

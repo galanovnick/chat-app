@@ -76,8 +76,9 @@ public class Chat implements Entity<ChatId> {
         Chat chat = (Chat) o;
 
         if (id != null ? !id.equals(chat.id) : chat.id != null) return false;
-        if (chatName != null ? !chatName.equals(chat.chatName) : chat.chatName != null) return false;
-        return creatorId != null ? creatorId.equals(chat.creatorId) : chat.creatorId == null;
+        return chatName != null ? chatName.equals(chat.chatName)
+                : chat.chatName == null && (creatorId != null ? creatorId.equals(chat.creatorId)
+                : chat.creatorId == null);
 
     }
 

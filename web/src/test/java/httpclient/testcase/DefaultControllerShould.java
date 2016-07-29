@@ -7,13 +7,13 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-import static httpclient.HttpClientTestUtils.sendGet;
+import static httpclient.testcase.HttpClientTestUtils.sendGet;
 import static org.junit.Assert.assertEquals;
 
 public class DefaultControllerShould {
 
     private final String baseUrl = "http://localhost:8080/";
-    private HttpClient client = HttpClientBuilder.create().build();
+    private final HttpClient client = HttpClientBuilder.create().build();
 
     @Test
     public void handleGetOnMainPage() {

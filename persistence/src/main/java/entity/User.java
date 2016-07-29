@@ -23,8 +23,9 @@ public class User implements Entity<UserId> {
         User user = (User) o;
 
         if (id != null ? !id.equals(user.id) : user.id != null) return false;
-        if (username != null ? !username.equals(user.username) : user.username != null) return false;
-        return password != null ? password.equals(user.password) : user.password == null;
+        return username != null ? username.equals(user.username)
+                : user.username == null && (password != null ? password.equals(user.password)
+                : user.password == null);
 
     }
 

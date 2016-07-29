@@ -2,7 +2,7 @@ package service;
 
 public class AuthenticationException extends Exception {
 
-    private String message;
+    private final String message;
 
     public AuthenticationException(String message) {
         this.message = message;

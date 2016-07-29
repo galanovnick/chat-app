@@ -33,8 +33,9 @@ public class MessageDto {
 
         MessageDto that = (MessageDto) o;
 
-        if (text != null ? !text.equals(that.text) : that.text != null) return false;
-        return authorName != null ? authorName.equals(that.authorName) : that.authorName == null;
+        return text != null ? text.equals(that.text)
+                : that.text == null && (authorName != null ? authorName.equals(that.authorName)
+                : that.authorName == null);
 
     }
 
