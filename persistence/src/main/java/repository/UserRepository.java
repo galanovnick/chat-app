@@ -5,20 +5,17 @@ import entity.tiny.user.UserId;
 import entity.tiny.user.UserName;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class UserRepository extends InMemoryRepository<User, UserId> {
 
     private static UserRepository instance;
 
-    private final static Object ID_LOCK = new Object();
-
-    private long idCounter = 0;
+    private final AtomicLong idCounter = new AtomicLong(0L);
 
     @Override
     protected UserId nextId() {
-        synchronized (ID_LOCK) {
-            return new UserId(idCounter++);
-        }
+        return new UserId(idCounter.getAndAdd(1L));
     }
 
     private UserRepository() {}

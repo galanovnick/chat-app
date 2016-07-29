@@ -22,7 +22,7 @@ public class ChatRepository extends InMemoryRepository<Chat, ChatId> {
 
     @Override
     protected ChatId nextId() {
-        return new ChatId(idCounter.getAndAdd(1));
+        return new ChatId(idCounter.getAndAdd(1L));
     }
 
     public static ChatRepository getInstance() {

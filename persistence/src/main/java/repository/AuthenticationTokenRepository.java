@@ -4,21 +4,19 @@ import entity.AuthenticationToken;
 import entity.tiny.user.AuthenticationTokenId;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class AuthenticationTokenRepository
         extends InMemoryRepository<AuthenticationToken, AuthenticationTokenId> {
 
-    private static final Object ID_LOCK = new Object();
 
     private static AuthenticationTokenRepository instance;
 
-    private long idCounter = 0;
+    private final AtomicLong idCounter = new AtomicLong(0L);
 
     @Override
     protected AuthenticationTokenId nextId() {
-        synchronized (ID_LOCK) {
-            return new AuthenticationTokenId(idCounter++);
-        }
+        return new AuthenticationTokenId(idCounter.getAndAdd(1L));
     }
 
     private AuthenticationTokenRepository(){}
