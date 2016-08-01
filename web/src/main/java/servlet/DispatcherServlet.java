@@ -50,7 +50,6 @@ public class DispatcherServlet extends HttpServlet {
         UrlMethodPair urlMethodPair = new UrlMethodPair(
                 request.getServletPath(),
                 HttpRequestMethod.forName(request.getMethod()));
-
         Optional<Handler> handler = handlerRegistry.getHandler(urlMethodPair);
         if (handler.isPresent()) {
             ResultWriter result = handler.get().processRequest(request, response);

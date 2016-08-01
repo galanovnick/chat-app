@@ -14,6 +14,7 @@ abstract class AbstractChatApplicationController implements Controller {
         UrlMethodPair createChat = new UrlMethodPair(url, GET);
         handlerRegistry.register(createChat, ((request, response) -> {
             try {
+                System.out.println("forward to \"/\"");
                 request.getRequestDispatcher("/").forward(request, response);
                 return null;
             } catch (IOException e) {

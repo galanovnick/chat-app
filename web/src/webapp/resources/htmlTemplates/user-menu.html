@@ -1,0 +1,15 @@
+<script id="user-menu-template" type="text/html">
+	<div class="container user-box" id="{{id}}">
+		<span>User: {{username}}</span>
+		<input type="text" class="room-name" placeholder="Chat name"/>
+		<input type="button" class="new-room" value="Create chat"/>
+		<span class="join-room-elem">Available chat rooms</span>
+		<select class="join-room-elem room-names">
+			{{#chats}}
+				<option value="{{title}}">{{title}}</option>
+			{{/chats}}
+		</select>
+		<input type="button" class="join-room-elem join-room" value="Join chat"/>
+		<span class="error" style="color: red; "></span>
+	</div>
+</script>
