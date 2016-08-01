@@ -35,10 +35,6 @@ public class ChatController
 
     private final HandlerRegistry handlerRegistry = HandlerRegistryImpl.getInstance();
 
-    static {
-        getInstance();
-    }
-
     private ChatController() {
         registerChatListPost();
         registerChatListGet();

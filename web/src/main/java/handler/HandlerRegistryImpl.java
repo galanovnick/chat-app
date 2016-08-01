@@ -1,6 +1,8 @@
 package handler;
 
-import controller.Controller;
+import controller.ChatController;
+import controller.LoginController;
+import controller.RegistrationController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,26 +37,8 @@ public class HandlerRegistryImpl implements HandlerRegistry {
         }
     }
 
-    @Override
-    public void registerController(Class<? extends Controller> controllerClass) {
-        try {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Trying to register controller: '%s'...",
-                        controllerClass.getName()));
-            }
-            Class.forName(controllerClass.getName());
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Controller '%s' has been successfully registered.",
-                        controllerClass.getName()));
-            }
-        } catch (ClassNotFoundException e) {
-            log.error(String.format("Failed controller '%s' registration.",
-                    controllerClass.getName()), e);
-            throw new IllegalStateException(e);
-        }
+    private HandlerRegistryImpl(){
     }
-
-    private HandlerRegistryImpl(){}
 
     public static HandlerRegistry getInstance() {
         if (instance == null) {

@@ -23,10 +23,6 @@ public class LoginController
 
     private static LoginController instance;
 
-    static {
-        getInstance();
-    }
-
     private final UserService userService = UserServiceImpl.getInstance();
 
     private final HandlerRegistry handlerRegistry = HandlerRegistryImpl.getInstance();

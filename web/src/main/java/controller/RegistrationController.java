@@ -20,13 +20,10 @@ public class RegistrationController
 
     private static RegistrationController instance;
 
-    static {
-        getInstance();
-    }
-
     private final UserService userService = UserServiceImpl.getInstance();
 
     private final HandlerRegistry handlerRegistry = HandlerRegistryImpl.getInstance();
+
     private RegistrationController() {
         registerRegistrationGet();
         registerRegistrationPost();

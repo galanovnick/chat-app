@@ -1,10 +1,7 @@
 package servlet;
 
 import controller.*;
-import handler.Handler;
-import handler.HandlerRegistry;
-import handler.HandlerRegistryImpl;
-import handler.UrlMethodPair;
+import handler.*;
 import result.ResultWriter;
 
 import javax.servlet.ServletException;
@@ -12,17 +9,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 public class DispatcherServlet extends HttpServlet {
 
-    private final HandlerRegistry handlerRegistry =
-            HandlerRegistryImpl.getInstance();
+    private final HandlerRegistry handlerRegistry;
 
     public DispatcherServlet() {
-        handlerRegistry.registerController(LoginController.class);
-        handlerRegistry.registerController(RegistrationController.class);
-        handlerRegistry.registerController(ChatController.class);;
+        super();
+        ControllerInitializer controllerInitializer =
+                new ControllerInitializer(
+                        HandlerRegistryImpl.getInstance(),
+                        Arrays.asList(
+                            RegistrationController.getInstance(),
+                            LoginController.getInstance(),
+                            ChatController.getInstance()
+                        )
+                );
+        handlerRegistry = controllerInitializer.getHandlerRegistry();
     }
 
     @Override
