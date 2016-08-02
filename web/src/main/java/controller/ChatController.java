@@ -142,7 +142,6 @@ public class ChatController
                         new ChatId(Long.parseLong(request.getParameter("chatId"))),
                         token.get().getUserId()
                 );
-                result.put("isLeft", "true");
                 result.put("message", "User successfully left.");
                 return new JsonResultWriter(result, 200);
             } else {
@@ -171,13 +170,11 @@ public class ChatController
                             new ChatId(chatId),
                            token.get().getUserId()
                     );
-                    result.put("isJoined", "true");
                     result.put("chatId", chatId.toString());
                     result.put("chatName",
                             chatService.getChat(new ChatId(chatId)).getChatName());
                     return new JsonResultWriter(result, 200);
                 } catch (UserAlreadyInChatException e) {
-                    result.put("isJoined", "false");
                     result.put("message", e.getMessage());
                     return new JsonResultWriter(result, 555);
                 }
@@ -200,11 +197,12 @@ public class ChatController
             if (token.isPresent()) {
                 JsonResult result = new JsonResult();
                 try {
-                    chatService.createChat(
-                        request.getParameter("chatName"),
-                        token.get().getUserId());
+                    ChatId chatId = chatService.createChat(
+                            request.getParameter("chatName"),
+                            token.get().getUserId());
                     Collection<ChatDto> allChats = chatService.getAllChats();
                     List<String> chatList = new ArrayList<>();
+                    result.put("chatId", chatId.value().toString());
                     allChats.forEach((chat) -> {
                         JsonResult res = new JsonResult();
                         res.put("chatId", chat.getChatId().value().toString());

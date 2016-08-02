@@ -1,5 +1,9 @@
 package httpclient.testcase;
 
+import httpclient.testunit.HttpClientTestUnit;
+import httpclient.testunit.impl.HttpClientTestUnitImpl;
+import httpclient.testunit.impl.Request;
+import httpclient.testunit.impl.Response;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -21,24 +25,19 @@ public class LoginControllerShould {
     private final String baseUrl = "http://localhost:8080/api/login";
     private final HttpClient client = HttpClientBuilder.create().build();
 
+    private final HttpClientTestUnit testUnit = new HttpClientTestUnitImpl();
+
     @Test
     public void handleUnregisteredUserAuthentication() {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("username", UUID.randomUUID().toString()));
         params.add(new BasicNameValuePair("password", "123"));
 
-        HttpResponse response = sendPost(baseUrl, params, client);
-
-        if (response == null) {
-            fail("Failed due null response.");
-        }
-
-        String expected = "{\"isAuthenticated\": \"false\"," +
-                "\"message\": \"Invalid username or password.\"}";
-        String actual = getResponseContent(response);
-        assertEquals("Failed unregistered user authentication.", 555,
-                response.getStatusLine().getStatusCode());
-        assertEquals("Failed unregistered user authentication.", expected, actual);
+        Response response = testUnit.sendPost(new Request(params, baseUrl, client));
+        response
+            .isStatusCodeEquals(555)
+            .isJson()
+                .hasProperty("message", "Invalid username or password.");
     }
 
     @Test
@@ -47,19 +46,11 @@ public class LoginControllerShould {
         params.add(new BasicNameValuePair("username", ""));
         params.add(new BasicNameValuePair("password", ""));
 
-        HttpResponse response = sendPost(baseUrl, params, client);
-
-        if (response == null) {
-            fail("Failed due null response.");
-        }
-
-        String expected = "{\"isAuthenticated\": \"false\"," +
-                "\"message\": \"Fields cannot be empty.\"}";
-        String actual = getResponseContent(response);
-
-        assertEquals("Failed unregistered user authentication.", 555,
-                response.getStatusLine().getStatusCode());
-        assertEquals("Failed unregistered user authentication.", expected, actual);
+        Response response = testUnit.sendPost(new Request(params, baseUrl, client));
+        response
+            .isStatusCodeEquals(555)
+            .isJson()
+                .hasProperty("message", "Fields cannot be empty.");
     }
 
     @Test
@@ -70,31 +61,21 @@ public class LoginControllerShould {
         params.add(new BasicNameValuePair("password", "123"));
         params.add(new BasicNameValuePair("passwordConfirm", "123"));
 
-        HttpResponse response = sendPost("http://localhost:8080/api/register", params, client);
+        Response regUserResponse = testUnit.sendPost(new Request(params,
+                "http://localhost:8080/api/register", client));
+        regUserResponse
+            .isStatusCodeEquals(200)
+            .isJson()
+                .hasProperty("message", "User has been successfully registered.");
 
-        if (response == null) {
-            fail("Failed due null response.");
-        }
-
-        String responseContent = getResponseContent(response);
-        String successfulRegistrationResult = "{\"isRegistered\": \"true\"," +
-                "\"message\": \"User has been successfully registered.\"}";
-        if (!responseContent.equals(successfulRegistrationResult)) {
-            System.out.println(responseContent);
-            fail("Failed on user registration.");
-        }
 
         params.clear();
         params.add(new BasicNameValuePair("username", username));
         params.add(new BasicNameValuePair("password", "123"));
 
-        response = sendPost(baseUrl, params, client);
-
-        if (response == null) {
-            fail("Failed due null response.");
-        }
-
-        assertEquals("Failed on user authentication.", 200,
-                response.getStatusLine().getStatusCode());
+        Response loginResponse = testUnit.sendPost(new Request(params, baseUrl, client));
+        loginResponse
+            .isStatusCodeEquals(200)
+            .isJson();
     }
 }

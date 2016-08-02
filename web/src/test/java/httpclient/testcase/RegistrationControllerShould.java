@@ -1,5 +1,9 @@
 package httpclient.testcase;
 
+import httpclient.testunit.HttpClientTestUnit;
+import httpclient.testunit.impl.HttpClientTestUnitImpl;
+import httpclient.testunit.impl.Request;
+import httpclient.testunit.impl.Response;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -19,6 +23,7 @@ public class RegistrationControllerShould {
 
     private final String baseUrl = "http://localhost:8080/api/register";
     private final HttpClient client = HttpClientBuilder.create().build();
+    private final HttpClientTestUnit testUnit = new HttpClientTestUnitImpl();
 
     @Test
     public void handleSuccessfullyUserRegistration() {
@@ -27,15 +32,12 @@ public class RegistrationControllerShould {
         params.add(new BasicNameValuePair("password", "12345"));
         params.add(new BasicNameValuePair("passwordConfirm", "12345"));
 
-        HttpResponse response = sendPost(baseUrl, params, client);
+        Response response = testUnit.sendPost(new Request(params, baseUrl, client));
+        response
+            .isStatusCodeEquals(200)
+            .isJson()
+                .hasProperty("message", "User has been successfully registered.");
 
-        String expectedContent = "{\"isRegistered\": \"true\"," +
-                "\"message\": \"User has been successfully registered.\"}";
-
-        String actualContent = getResponseContent(response);
-
-        assertEquals("Failed on user registration post request.",
-                expectedContent, actualContent);
     }
 
     @Test
@@ -45,15 +47,11 @@ public class RegistrationControllerShould {
         params.add(new BasicNameValuePair("password", "54321"));
         params.add(new BasicNameValuePair("passwordConfirm", "12345"));
 
-        HttpResponse response = sendPost(baseUrl, params, client);
-
-        String expectedContent = "{\"isRegistered\": \"false\"," +
-                "\"message\": \"Passwords do not match.\"}";
-
-        String actualContent = getResponseContent(response);
-
-        assertEquals("Failed on user registration post request.",
-                expectedContent, actualContent);
+        Response response = testUnit.sendPost(new Request(params, baseUrl, client));
+        response
+            .isStatusCodeEquals(555)
+            .isJson()
+            .hasProperty("message", "Passwords do not match.");
     }
 
     @Test
@@ -63,15 +61,11 @@ public class RegistrationControllerShould {
         params.add(new BasicNameValuePair("password", ""));
         params.add(new BasicNameValuePair("passwordConfirm", ""));
 
-        HttpResponse response = sendPost(baseUrl, params, client);
-
-        String expectedContent = "{\"isRegistered\": \"false\"," +
-                "\"message\": \"Fields cannot be empty.\"}";
-
-        String actualContent = getResponseContent(response);
-
-        assertEquals("Failed on user registration post request.",
-                expectedContent, actualContent);
+        Response response = testUnit.sendPost(new Request(params, baseUrl, client));
+        response
+            .isStatusCodeEquals(555)
+            .isJson()
+                .hasProperty("message", "Fields cannot be empty.");
     }
 
     @Test
@@ -81,15 +75,12 @@ public class RegistrationControllerShould {
         params.add(new BasicNameValuePair("password", "123"));
         params.add(new BasicNameValuePair("passwordConfirm", "123"));
 
-        sendPost(baseUrl, params, client);
-        HttpResponse response = sendPost(baseUrl, params, client);
+        testUnit.sendPost(new Request(params, baseUrl, client));
 
-        String expectedContent = "{\"isRegistered\": \"false\"," +
-                "\"message\": \"User with such name already exists.\"}";
-
-        String actualContent = getResponseContent(response);
-
-        assertEquals("Failed on user registration post request.",
-                expectedContent, actualContent);
+        Response response = testUnit.sendPost(new Request(params, baseUrl, client));
+        response
+            .isStatusCodeEquals(555)
+            .isJson()
+                .hasProperty("message", "User with such name already exists.");
     }
 }

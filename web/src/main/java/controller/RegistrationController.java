@@ -45,11 +45,9 @@ public class RegistrationController
             try {
                 userService.registerUser(regDto);
             } catch (InvalidUserDataException e) {
-                result.put("isRegistered", "false");
                 result.put("message", e.getMessage());
                 return new JsonResultWriter(result, 555);
             }
-            result.put("isRegistered", "true");
             result.put("message", "User has been successfully registered.");
             return new JsonResultWriter(result, 200);
         }));

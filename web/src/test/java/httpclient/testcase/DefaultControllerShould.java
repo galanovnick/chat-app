@@ -1,32 +1,38 @@
 package httpclient.testcase;
 
-import org.apache.http.HttpResponse;
+import httpclient.testunit.HttpClientTestUnit;
+import httpclient.testunit.impl.HttpClientTestUnitImpl;
+import httpclient.testunit.impl.Request;
+import httpclient.testunit.impl.Response;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.Test;
 
 import java.util.UUID;
 
-import static httpclient.testcase.HttpClientTestUtils.sendGet;
+import static controller.HttpRequestMethod.GET;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class DefaultControllerShould {
 
     private final String baseUrl = "http://localhost:8080/";
     private final HttpClient client = HttpClientBuilder.create().build();
+    private final HttpClientTestUnit testUnit = new HttpClientTestUnitImpl();
 
     @Test
     public void handleGetOnMainPage() {
-        HttpResponse response = sendGet(baseUrl, client);
-
-        assertEquals("Failed on root get request.", 200, response.getStatusLine().getStatusCode());
+        Response response = testUnit.sendGet(new Request(baseUrl, client));
+        response
+            .isHtml()
+            .isStatusCodeEquals(200);
     }
 
     @Test
     public void handleGetOnInvalidUrl() {
-        HttpResponse response = sendGet(baseUrl + UUID.randomUUID().toString(), client);
+        Response response = testUnit.sendGet(new Request(
+                baseUrl+ UUID.randomUUID().toString(), client));
 
-        assertEquals("Failed on get request to invalid url.",
-                404, response.getStatusLine().getStatusCode());
+        response.isStatusCodeEquals(404);
     }
 }

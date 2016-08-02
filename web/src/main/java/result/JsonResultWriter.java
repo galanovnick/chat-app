@@ -17,6 +17,7 @@ public class JsonResultWriter implements ResultWriter {
     public void write(HttpServletResponse response) {
         try {
             response.setStatus(responseCode);
+            response.setContentType("application/json");
             response.getWriter().write(result.getResult());
         } catch (IOException e) {
             throw new IllegalStateException(e);
