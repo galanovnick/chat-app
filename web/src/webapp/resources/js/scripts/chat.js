@@ -44,7 +44,7 @@ var ChatApp = function(_rootId) {
 
 		$('body').on('keyup', '.txt-input', function(event) {
 			if (event.ctrlKey && event.keyCode === 13) {
-				$(this).parent().child('.txt-input-btn').click();
+				$(this).parent().children('.txt-input-btn').click();
 			}
 		});
 	};

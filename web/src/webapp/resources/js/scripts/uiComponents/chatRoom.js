@@ -94,6 +94,13 @@ var ChatRoomComponent = function(_id, _chatName, _rootId, _eventBus) {
 				token: $("#u-token").val(),
 				chatId: _id
 			}, events.messageListRequestedEvent);
+
+			setInterval(function() {
+				_eventBus.post({
+					token: $("#u-token").val(),
+					chatId: _id
+				}, events.messageListRequestedEvent);
+			}, 1000);
 		};
 
 		var _render = function(roomMessages) {
