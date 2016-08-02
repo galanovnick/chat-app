@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertEquals;
 
 public class ChatControllerShould {
@@ -35,7 +36,7 @@ public class ChatControllerShould {
         params.add(new BasicNameValuePair("passwordConfirm", "12345"));
 
         testUnit.sendPost(new Request(params, baseUrl + "/register", client))
-                .isStatusCodeEquals(200)
+                .isStatusCodeEquals(SC_OK)
                 .isJson()
                 .hasProperty("message", "User has been successfully registered.");
 
@@ -47,7 +48,7 @@ public class ChatControllerShould {
         Response loginResponse =
                 testUnit.sendPost(new Request(params, baseUrl + "/login", client));
         loginResponse
-            .isStatusCodeEquals(200)
+            .isStatusCodeEquals(SC_OK)
             .isJson()
                 .hasProperty("token");
         token = loginResponse.getProperty("token");
@@ -59,7 +60,7 @@ public class ChatControllerShould {
         params.add(new BasicNameValuePair("token", token));
 
         testUnit.sendPost(new Request(params, baseUrl + "/chats", client))
-                .isStatusCodeEquals(200)
+                .isStatusCodeEquals(SC_OK)
                 .isJson()
                     .hasProperty("chats");
     }
@@ -69,7 +70,7 @@ public class ChatControllerShould {
         String chatName = UUID.randomUUID().toString();
         Response newChatResponse = createNewChat(chatName);
         newChatResponse
-                .isStatusCodeEquals(200)
+                .isStatusCodeEquals(SC_OK)
                     .hasProperty("chats");
     }
 
@@ -93,7 +94,7 @@ public class ChatControllerShould {
     public void handleUserJoin() {
         Response newChatResponse = createNewChat(UUID.randomUUID().toString());
         newChatResponse
-                .isStatusCodeEquals(200)
+                .isStatusCodeEquals(SC_OK)
                 .hasProperty("chatId");
 
         ChatId chatId = new ChatId(Long.parseLong(newChatResponse.getProperty("chatId")));
@@ -104,7 +105,7 @@ public class ChatControllerShould {
     public void handleUserLeave() {
         Response newChatResponse = createNewChat(UUID.randomUUID().toString());
         newChatResponse
-                .isStatusCodeEquals(200)
+                .isStatusCodeEquals(SC_OK)
                 .hasProperty("chatId");
 
         ChatId chatId = new ChatId(Long.parseLong(newChatResponse.getProperty("chatId")));
@@ -116,7 +117,7 @@ public class ChatControllerShould {
     public void handleMessageAddition() {
         Response newChatResponse = createNewChat(UUID.randomUUID().toString());
         newChatResponse
-                .isStatusCodeEquals(200)
+                .isStatusCodeEquals(SC_OK)
                 .hasProperty("chatId");
 
         ChatId chatId = new ChatId(Long.parseLong(newChatResponse.getProperty("chatId")));
@@ -128,7 +129,7 @@ public class ChatControllerShould {
     public void provideMessageList() {
         Response newChatResponse = createNewChat(UUID.randomUUID().toString());
         newChatResponse
-                .isStatusCodeEquals(200)
+                .isStatusCodeEquals(SC_OK)
                 .hasProperty("chatId");
 
         ChatId chatId = new ChatId(Long.parseLong(newChatResponse.getProperty("chatId")));
@@ -146,7 +147,7 @@ public class ChatControllerShould {
         params.add(new BasicNameValuePair("chatId", chatId.value().toString()));
 
         testUnit.sendPost(new Request(params, baseUrl + "/chat/messages", client))
-                .isStatusCodeEquals(200)
+                .isStatusCodeEquals(SC_OK)
                 .hasProperty("messages");
     }
 
@@ -158,7 +159,7 @@ public class ChatControllerShould {
         params.add(new BasicNameValuePair("message", message));
 
         testUnit.sendPost(new Request(params, baseUrl + "/chat/add-message", client))
-                .isStatusCodeEquals(200)
+                .isStatusCodeEquals(SC_OK)
                 .hasProperty("roomId", chatId.value().toString())
                 .hasProperty("messages");
     }
@@ -169,7 +170,7 @@ public class ChatControllerShould {
         params.add(new BasicNameValuePair("chatId", chatId.value().toString()));
 
         testUnit.sendPost(new Request(params, baseUrl + "/chat/leave", client))
-                .isStatusCodeEquals(200)
+                .isStatusCodeEquals(SC_OK)
                 .hasProperty("message", "User successfully left.");
     }
 
@@ -179,7 +180,7 @@ public class ChatControllerShould {
         params.add(new BasicNameValuePair("chatId", chatId.value().toString()));
 
         testUnit.sendPost(new Request(params, baseUrl + "/chat/join", client))
-                .isStatusCodeEquals(200)
+                .isStatusCodeEquals(SC_OK)
                 .hasProperty("chatName");
     }
 

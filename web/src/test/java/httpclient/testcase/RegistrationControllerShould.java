@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static httpclient.testcase.HttpClientTestUtils.getResponseContent;
-import static httpclient.testcase.HttpClientTestUtils.sendPost;
-import static org.junit.Assert.assertEquals;
+import static org.apache.http.HttpStatus.SC_OK;
 
 public class RegistrationControllerShould {
 
@@ -34,7 +32,7 @@ public class RegistrationControllerShould {
 
         Response response = testUnit.sendPost(new Request(params, baseUrl, client));
         response
-            .isStatusCodeEquals(200)
+            .isStatusCodeEquals(SC_OK)
             .isJson()
                 .hasProperty("message", "User has been successfully registered.");
 

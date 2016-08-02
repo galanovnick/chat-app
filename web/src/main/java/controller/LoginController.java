@@ -14,6 +14,7 @@ import service.impl.dto.AuthenticationTokenDto;
 
 import java.util.Optional;
 
+import static controller.ControllerConstants.*;
 import static controller.HttpRequestMethod.POST;
 
 public class LoginController
@@ -41,15 +42,13 @@ public class LoginController
             AuthenticationTokenDto token;
 
             try {
-                token = userService.login(new UserName(request.getParameter("username")),
-                        new UserPassword(request.getParameter("password")));
+                token = userService.login(new UserName(request.getParameter(USERNAME_PARAMETER)),
+                        new UserPassword(request.getParameter(PASSWORD_PARAMETER)));
             } catch (AuthenticationException e) {
-                result.put("isAuthenticated", "false");
-                result.put("message", e.getMessage());
+                result.put(MESSAGE_PARAMETER, e.getMessage());
                 return new JsonResultWriter(result, 555);
             }
-            result.put("isAuthenticated", "true");
-            result.put("token", token.getToken());
+            result.put(TOKEN_PARAMETER, token.getToken());
             return new JsonResultWriter(result, 200);
         }));
     }
@@ -67,12 +66,12 @@ public class LoginController
                 = new UrlMethodPair("/api/username", POST);
         handlerRegistry.register(postUsernameRequest, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
-                    new AuthenticationTokenDto(request.getParameter("token"))
+                    new AuthenticationTokenDto(request.getParameter(TOKEN_PARAMETER))
             );
 
             if (token.isPresent()) {
                 JsonResult result = new JsonResult();
-                result.put("username",
+                result.put(USERNAME_PARAMETER,
                         userService.getUser(token.get().getUserId())
                                 .getUsername());
                 return new JsonResultWriter(result, 200);

@@ -11,6 +11,8 @@ import org.junit.Test;
 import java.util.UUID;
 
 import static controller.HttpRequestMethod.GET;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -25,7 +27,7 @@ public class DefaultControllerShould {
         Response response = testUnit.sendGet(new Request(baseUrl, client));
         response
             .isHtml()
-            .isStatusCodeEquals(200);
+            .isStatusCodeEquals(SC_OK);
     }
 
     @Test
@@ -33,6 +35,6 @@ public class DefaultControllerShould {
         Response response = testUnit.sendGet(new Request(
                 baseUrl+ UUID.randomUUID().toString(), client));
 
-        response.isStatusCodeEquals(404);
+        response.isStatusCodeEquals(SC_NOT_FOUND);
     }
 }

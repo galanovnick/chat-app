@@ -4,9 +4,12 @@ import handler.HandlerRegistry;
 import handler.UrlMethodPair;
 import result.ResultWriter;
 
+import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 
 import static controller.HttpRequestMethod.GET;
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static javax.servlet.http.HttpServletResponse.SC_PROXY_AUTHENTICATION_REQUIRED;
 
 abstract class AbstractChatApplicationController implements Controller {
 
@@ -27,7 +30,7 @@ abstract class AbstractChatApplicationController implements Controller {
         return resp -> {
             try {
                 resp.getWriter().write("Authentication required.");
-                resp.setStatus(403);
+                resp.setStatus(SC_FORBIDDEN);
             } catch (IOException e) {
                 throw new IllegalStateException(e);
             }

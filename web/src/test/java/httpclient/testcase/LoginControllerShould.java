@@ -15,10 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static httpclient.testcase.HttpClientTestUtils.getResponseContent;
-import static httpclient.testcase.HttpClientTestUtils.sendPost;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.apache.http.HttpStatus.SC_OK;
 
 public class LoginControllerShould {
 
@@ -64,7 +61,7 @@ public class LoginControllerShould {
         Response regUserResponse = testUnit.sendPost(new Request(params,
                 "http://localhost:8080/api/register", client));
         regUserResponse
-            .isStatusCodeEquals(200)
+            .isStatusCodeEquals(SC_OK)
             .isJson()
                 .hasProperty("message", "User has been successfully registered.");
 
@@ -75,7 +72,7 @@ public class LoginControllerShould {
 
         Response loginResponse = testUnit.sendPost(new Request(params, baseUrl, client));
         loginResponse
-            .isStatusCodeEquals(200)
+            .isStatusCodeEquals(SC_OK)
             .isJson();
     }
 }

@@ -12,6 +12,7 @@ import service.UserService;
 import service.impl.UserServiceImpl;
 import service.impl.dto.RegistrationDto;
 
+import static controller.ControllerConstants.*;
 import static controller.HttpRequestMethod.*;
 
 public class RegistrationController
@@ -37,18 +38,18 @@ public class RegistrationController
             JsonResult result = new JsonResult();
 
             RegistrationDto regDto = new RegistrationDto(
-                    new UserName(request.getParameter("username")),
-                    new UserPassword(request.getParameter("password")),
-                    new UserPassword(request.getParameter("passwordConfirm"))
+                    new UserName(request.getParameter(USERNAME_PARAMETER)),
+                    new UserPassword(request.getParameter(PASSWORD_PARAMETER)),
+                    new UserPassword(request.getParameter(PASSWORD_CONFIRM_PARAMETER))
             );
 
             try {
                 userService.registerUser(regDto);
             } catch (InvalidUserDataException e) {
-                result.put("message", e.getMessage());
+                result.put(MESSAGE_PARAMETER, e.getMessage());
                 return new JsonResultWriter(result, 555);
             }
-            result.put("message", "User has been successfully registered.");
+            result.put(MESSAGE_PARAMETER, "User has been successfully registered.");
             return new JsonResultWriter(result, 200);
         }));
     }
