@@ -47,7 +47,7 @@ describe("Chat service test suite", function() {
 
 		eb.subscribe(events.roomCreationFailedEvent, function() {
 			delivered = true;
-		})
+		});
 
 		var chatService = new ChatService(eb, new Storage());
 
@@ -72,7 +72,7 @@ describe("Chat service test suite", function() {
 
 		eb.subscribe(events.roomCreationFailedEvent, function() {
 			delivered = true;
-		})
+		});
 
 		var chatService = new ChatService(eb, new Storage());
 

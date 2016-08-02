@@ -13,7 +13,7 @@ var ChatService = function(_eventBus, _storage) {
 	    }
 
 		return result;
-	}
+	};
 
 	var _createRoom = function(chatRoom) {
 		chatRoom.title = chatRoom.title.replace(/ +/g, ' ');
@@ -30,7 +30,7 @@ var ChatService = function(_eventBus, _storage) {
 			_storage.addItem("chats", chatRoom);
 			_eventBus.post(chatRoom.title, events.roomSuccessfullyCreatedEvent);
 		}
-	}
+	};
 
 	var randomIdChatPrefix = generateRandomId();
 
@@ -46,12 +46,12 @@ var ChatService = function(_eventBus, _storage) {
 			_storage.addItem(randomIdChatPrefix + chatRoomTitle, userRequestData.username);
 			_eventBus.post(chatRoomTitle, events.userSuccessfullyJoinedEvent);
 		}
-	}
+	};
 
 	var _onUserLeft = function(userRoomInfo) {
 		_storage.removeItem(randomIdChatPrefix + userRoomInfo.roomId, userRoomInfo.username);
 		_eventBus.post(userRoomInfo.roomId, events.userSuccessfullyLeftEvent);
-	}
+	};
 
 	var isChatExists = function(chatRoomTitle) {
 		var chats = _storage.getItems("chats");
@@ -63,17 +63,17 @@ var ChatService = function(_eventBus, _storage) {
 			}
 		});
 		return isChatExists;
-	}
+	};
 
 	var isUserJoined = function(username, chatRoomTitle) {
 		var usersInChat = _storage.getItems(randomIdChatPrefix + chatRoomTitle);
 
 		return usersInChat.indexOf(username) > -1;
-	}
+	};
 
 	var _getAllRooms = function() {
 		return _storage.getItems("chats");
-	}
+	};
 
 	var randomIdMessagePrefix = generateRandomId();
 
@@ -89,11 +89,11 @@ var ChatService = function(_eventBus, _storage) {
 
 			_eventBus.post({roomId: message.roomId, messages: _storage.getItems(randomIdMessagePrefix + message.roomId)}, events.messageSuccessfullyAddedEvent);
 		}
-	}
+	};
 
 	var _getAllMessages = function(roomId) {
 		return _storage.getItems(randomIdMessagePrefix + roomId);
-	}
+	};
 
 	return {
 		"onRoomAdded": _createRoom,
@@ -103,7 +103,7 @@ var ChatService = function(_eventBus, _storage) {
 		"getAllMessages": _getAllMessages,
 		"onUserLeft": _onUserLeft
 	}
-}
+};
 
 if (typeof define !== 'function') {
     var define = require('amdefine')(module);

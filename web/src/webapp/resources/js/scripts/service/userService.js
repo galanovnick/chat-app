@@ -20,13 +20,13 @@ var UserService = function(_userEventBus, _storage) {
 		} else if (isUserExists(user)){
 			_userEventBus.post("User already exists.", events.registrationFailedEvent);
 		} else {
-			console.log("User(" + user.username + ") created.")
+			console.log("User(" + user.username + ") created.");
 
 			_storage.addItem("users", {username: user.username, password: user.password});
 
 			_userEventBus.post(user.username, events.successfulRegistrationEvent);
 		}
-	}
+	};
 
 	var _authenticate = function(user) {
 		if (user.username === "" || user.password === "") {
@@ -41,15 +41,15 @@ var UserService = function(_userEventBus, _storage) {
 
 			_userEventBus.post("Invalid username or password.", events.authenticationFailedEvent);	
 		}
-	}
+	};
 
 	var _onUserAdded = function(user) {
 		_create(user);
-	}
+	};
 	
 	var _onUserAuthenticated = function(user) {
 		return _authenticate(user);
-	}
+	};
 
 	var isUserExists = function(user) {
 		var users = _storage.getItems("users");
@@ -61,7 +61,7 @@ var UserService = function(_userEventBus, _storage) {
 			}
 		});
 		return isUserExistsKey;
-	}
+	};
 
 	var checkUserData = function(user) {
 		var users = _storage.getItems("users");
@@ -73,18 +73,18 @@ var UserService = function(_userEventBus, _storage) {
 			}
 		});
 		return isUserDataCorrect;
-	}
+	};
 
 	var _getAll = function() {
 		return _storage.getItems("users");
-	}
+	};
 
 	return {
 		"onUserAdded": _onUserAdded,
 		"onUserAuthenticated": _onUserAuthenticated,
 		"getAll": _getAll
 	}
-}
+};
 
 if (typeof define !== 'function') {
     var define = require('amdefine')(module);
