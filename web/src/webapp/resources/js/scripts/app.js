@@ -2,18 +2,18 @@ require.config({
 	baseUrl: "resources/js/scripts",
 	paths: {
 		jquery: "lib/jquery.min"
-	}
+	},
+	urlArgs: "bust=" + (new Date()).getTime()
 });
 
 define(function(require) {
 	require("events");
 	require("lib/eventBus");
-	require("storage/storage")
 	require("dto/userDto");
 	require("dto/messageDto");
-	require("dto/roomDto");
-	require("service/userService");
-	require("service/chatService")
+	require("dto/chatDto");
+	require("service/remoteUserService");
+	require("service/remoteChatService");
 	require("uiComponents/registration");
 	require("uiComponents/login");
 	require("uiComponents/menu");

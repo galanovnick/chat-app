@@ -1,5 +1,5 @@
-var UserMenuComponent = function(_componentRootId, _rootId, _eventBus, _storage) {
-    var _chatService = new ChatService(_eventBus, _storage);
+var UserMenuComponent = function(_componentRootId, _rootId, _eventBus) {
+    var _chatService = new ChatService(_eventBus);
 
     var _init = function() {
         _eventBus.subscribe(events.messageAddedEvent, _chatService.onMessageAdded);
@@ -10,22 +10,14 @@ var UserMenuComponent = function(_componentRootId, _rootId, _eventBus, _storage)
         _eventBus.subscribe(events.userSuccessfullyJoinedEvent, _onUserSuccessfullyJoined);
         _eventBus.subscribe(events.failedRoomJoinEvent, _onRoomCreationFailed);
         _eventBus.subscribe(events.leaveRommButtonClickedEvent, _chatService.onUserLeft);
+        _eventBus.subscribe(events.chatListProvidedEvent, _render);
+        _eventBus.subscribe(events.chatListRequestedEvent, _chatService.onChatListRequested);
+        _eventBus.subscribe(events.messageListRequestedEvent, _chatService.onMessageListRequested);
 
-        _render();
+        _eventBus.post($("#u-token").val(), events.chatListRequestedEvent);
+    };
 
-        $("#" + _componentRootId + " .new-room").click(function() {
-            _eventBus.post(new RoomDto($("#" + _componentRootId + " .room-name").val()), events.createRoomButtonClickedEvent);
-        });
-
-        $("#" + _componentRootId + " .join-room").click(function() {
-            _eventBus.post({username: $("#u-name").val(),
-                title: $("#" + _componentRootId + " .room-names").val()}, events.joinRoomButtonClickedEvent);
-        });
-    }
-
-    var _render = function() {
-        var chats = _chatService.getAllRooms();
-
+    var _render = function(chats) {
         $('#' + _rootId + " .menu-content").mustache('user-menu-template',
             {
                 id: _componentRootId,
@@ -36,18 +28,33 @@ var UserMenuComponent = function(_componentRootId, _rootId, _eventBus, _storage)
         if (chats.length < 1) {
             $("#" + _componentRootId + " .join-room-elem").hide();
         }
-    }
+        $("#" + _componentRootId + " .new-room").click(function() {
+            _eventBus.post({
+                    chatDto: new ChatDto($("#" + _componentRootId + " .room-name").val()),
+                    token: $("#u-token").val()
+                },
+                events.createRoomButtonClickedEvent);
+        });
+
+        $("#" + _componentRootId + " .join-room").click(function() {
+            _eventBus.post(
+                {
+                    token: $("#u-token").val(),
+                    chatId: $("#" + _componentRootId + " .room-names").val()
+                },
+                events.joinRoomButtonClickedEvent);
+        });
+    };
 
     var _onRoomCreationFailed = function(message) {
         $("#" + _componentRootId + " .error").html(message);
-    }
+    };
 
-    var _onRoomSuccessfullyCreated = function(_roomTitle) {
-        var chats = _chatService.getAllRooms();
+    var _onRoomSuccessfullyCreated = function(_chats) {
         $("#" + _componentRootId + " .room-names").mustache('chat-list-template', {
-            chats: chats
+            chats: _chats
         }, {method: 'html'});
-        if (chats.length < 1) {
+        if (_chats.length < 1) {
             $("#" + _componentRootId + " .join-room-elem").hide();
         } else {
             $("#" + _componentRootId + " .join-room-elem").show();
@@ -55,20 +62,21 @@ var UserMenuComponent = function(_componentRootId, _rootId, _eventBus, _storage)
 
         $("#" + _componentRootId + " .error").html("");
         $("#" + _componentRootId + " .room-name").val("");
-    }
+    };
 
-    var _onUserSuccessfullyJoined = function(roomTittle) {
-        var newRoom = new ChatRoomComponent(roomTittle, _rootId, _eventBus, _chatService);
+    var _onUserSuccessfullyJoined = function(chatData) {
+        var newRoom = new ChatRoomComponent(chatData.chatId, chatData.chatName,
+            _rootId, _eventBus, _chatService);
         newRoom.init();
 
         $("#" + _componentRootId + " .error").html("");
         $("#" + _componentRootId + " .room-name").val("");
-    }
+    };
 
     return {
         "init": _init
     }
-}
+};
 
 if (typeof define !== 'function') {
     var define = require('amdefine')(module);

@@ -30,7 +30,7 @@ public class RegistrationController
     }
 
     private void registerRegistrationPost() {
-        UrlMethodPair postUrlMethodPair = new UrlMethodPair("/register", POST);
+        UrlMethodPair postUrlMethodPair = new UrlMethodPair("/api/register", POST);
 
         handlerRegistry.register(postUrlMethodPair, ((request, response) -> {
 
@@ -55,7 +55,7 @@ public class RegistrationController
         }));
     }
     private void registerRegistrationGet() {
-        handleGet("/register", handlerRegistry);
+        handleGet("/api/register", handlerRegistry);
     }
     public static RegistrationController getInstance() {
         if (instance == null) {

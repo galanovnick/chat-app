@@ -11,11 +11,8 @@ var ChatApp = function(_rootId) {
 	$.Mustache.load('resources/htmlTemplates/message-list.html');
 	$.Mustache.add('message-list-div', '<div class="container text-container messages"></div>');
 
-	var _storage = new Storage();
 	var _eventBus = new EventBus();
-	var _userService = new UserService(_eventBus, _storage);
-
-	var _chatService;
+	var _userService = new UserService(_eventBus);
 
 	var _components = {};
 
@@ -50,15 +47,15 @@ var ChatApp = function(_rootId) {
 				$(this).parent().child('.txt-input-btn').click();
 			}
 		});
-	}
+	};
 
 	var _createUserMenu = function() {
-		_components.userBox = new UserMenuComponent("userBox", _rootId, _eventBus, _storage);
+		_components.userBox = new UserMenuComponent("userBox", _rootId, _eventBus);
 		_components.userBox.init();
-	}
+	};
 
 	return {"init" : _init};
-}
+};
 
 if (typeof define !== 'function') {
     var define = require('amdefine')(module);

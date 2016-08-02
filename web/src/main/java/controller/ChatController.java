@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static controller.HttpRequestMethod.POST;
 
@@ -56,11 +55,11 @@ public class ChatController
     }
 
     private void registerMessagesGet() {
-        handleGet("/chat/messages", handlerRegistry);
+        handleGet("/api/chat/messages", handlerRegistry);
     }
 
     private void registerMessagesPost() {
-        UrlMethodPair createChatPair = new UrlMethodPair("/chat/messages", POST);
+        UrlMethodPair createChatPair = new UrlMethodPair("/api/chat/messages", POST);
         handlerRegistry.register(createChatPair, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
                     new AuthenticationTokenDto(request.getParameter("token"))
@@ -69,16 +68,17 @@ public class ChatController
             if (token.isPresent()) {
                 JsonResult result = new JsonResult();
 
-                Collection<MessageDto> messages = chatService.getAllChatMessages(
-                        new ChatId(Long.parseLong(request.getParameter("chatId"))));
-                List<String> messagesList =
-                        messages.stream()
-                                .map(message ->
-                                        String.format("%s: %s",
-                                                message.getAuthorName(),
-                                                message.getText()))
-                                .collect(Collectors.toList());
-                result.put("messages", messagesList.toArray(new String[messagesList.size()]));
+                Collection<MessageDto> allChatMessages =
+                        chatService.getAllChatMessages(
+                                new ChatId(Long.parseLong(request.getParameter("chatId"))));
+                List<String> messageList = new ArrayList<>();
+                allChatMessages.forEach((message) -> {
+                    JsonResult messageResult = new JsonResult();
+                    messageResult.put("text", message.getText());
+                    messageResult.put("username", message.getAuthorName());
+                    messageList.add(messageResult.getResult());
+                });
+                result.put("messages", messageList.toArray(new String[messageList.size()]));
                 return new JsonResultWriter(result, 200);
             } else {
                 return authenticationRequiredErrorWriter();
@@ -87,11 +87,11 @@ public class ChatController
     }
 
     private void registerAddMessageGet() {
-        handleGet("/chat/add-message", handlerRegistry);
+        handleGet("/api/chat/add-message", handlerRegistry);
     }
 
     private void registerAddMessagePost() {
-        UrlMethodPair createChatPair = new UrlMethodPair("/chat/add-message", POST);
+        UrlMethodPair createChatPair = new UrlMethodPair("/api/chat/add-message", POST);
         handlerRegistry.register(createChatPair, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
                     new AuthenticationTokenDto(request.getParameter("token"))
@@ -99,14 +99,24 @@ public class ChatController
 
             if (token.isPresent()) {
                 JsonResult result = new JsonResult();
-
+                Long chatId = Long.parseLong(request.getParameter("chatId"));
                 chatService.addMessage(
-                        new ChatId(Long.parseLong(request.getParameter("chatId"))),
+                        new ChatId(chatId),
                         new Message(
                                 userService.getUser(token.get().getUserId()).getUsername(),
                                 request.getParameter("message"))
                 );
-                result.put("isMessageAdded", "true");
+                result.put("roomId", chatId.toString());
+                Collection<MessageDto> allChatMessages =
+                        chatService.getAllChatMessages(new ChatId(chatId));
+                List<String> messageList = new ArrayList<>();
+                allChatMessages.forEach((message) -> {
+                    JsonResult messageResult = new JsonResult();
+                    messageResult.put("text", message.getText());
+                    messageResult.put("username", message.getAuthorName());
+                    messageList.add(messageResult.getResult());
+                });
+                result.put("messages", messageList.toArray(new String[messageList.size()]));
                 return new JsonResultWriter(result, 200);
             } else {
                 return authenticationRequiredErrorWriter();
@@ -115,11 +125,11 @@ public class ChatController
     }
 
     private void registerLeaveUserGet() {
-        handleGet("/chat/leave", handlerRegistry);
+        handleGet("/api/chat/leave", handlerRegistry);
     }
 
     private void registerLeaveUserPost() {
-        UrlMethodPair createChatPair = new UrlMethodPair("/chat/leave", POST);
+        UrlMethodPair createChatPair = new UrlMethodPair("/api/chat/leave", POST);
         handlerRegistry.register(createChatPair, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
                     new AuthenticationTokenDto(request.getParameter("token"))
@@ -142,11 +152,11 @@ public class ChatController
     }
 
     private void registerJoinUserGet() {
-        handleGet("/chat/join", handlerRegistry);
+        handleGet("/api/chat/join", handlerRegistry);
     }
 
     private void registerJoinUserPost() {
-        UrlMethodPair createChatPair = new UrlMethodPair("/chat/join", POST);
+        UrlMethodPair createChatPair = new UrlMethodPair("/api/chat/join", POST);
         handlerRegistry.register(createChatPair, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
                     new AuthenticationTokenDto(request.getParameter("token"))
@@ -155,13 +165,16 @@ public class ChatController
             if (token.isPresent()) {
                 JsonResult result = new JsonResult();
 
+                Long chatId = Long.parseLong(request.getParameter("chatId"));
                 try {
                     chatService.joinChat(
-                            new ChatId(Long.parseLong(request.getParameter("chatId"))),
+                            new ChatId(chatId),
                            token.get().getUserId()
                     );
                     result.put("isJoined", "true");
-                    result.put("message", "User successfully joined.");
+                    result.put("chatId", chatId.toString());
+                    result.put("chatName",
+                            chatService.getChat(new ChatId(chatId)).getChatName());
                     return new JsonResultWriter(result, 200);
                 } catch (UserAlreadyInChatException e) {
                     result.put("isJoined", "false");
@@ -175,29 +188,32 @@ public class ChatController
     }
 
     private void registerCreateChatGet() {
-        handleGet("/chat/new", handlerRegistry);
+        handleGet("/api/chat/new", handlerRegistry);
     }
 
     private void registerCreateChatPost() {
-        UrlMethodPair createChatPair = new UrlMethodPair("/chat/new", POST);
+        UrlMethodPair createChatPair = new UrlMethodPair("/api/chat/new", POST);
         handlerRegistry.register(createChatPair, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
                     new AuthenticationTokenDto(request.getParameter("token"))
             );
-
             if (token.isPresent()) {
                 JsonResult result = new JsonResult();
                 try {
-                    ChatId chatId = chatService.createChat(
-                            request.getParameter("chatName"),
-                            token.get().getUserId()
-                    );
-                    result.put("isCreated", "true");
-                    result.put("chatId", chatId.value().toString());
-
+                    chatService.createChat(
+                        request.getParameter("chatName"),
+                        token.get().getUserId());
+                    Collection<ChatDto> allChats = chatService.getAllChats();
+                    List<String> chatList = new ArrayList<>();
+                    allChats.forEach((chat) -> {
+                        JsonResult res = new JsonResult();
+                        res.put("chatId", chat.getChatId().value().toString());
+                        res.put("chatName", chat.getChatName());
+                        chatList.add(res.getResult());
+                    });
+                    result.put("chats", chatList.toArray(new String[chatList.size()]));
                     return new JsonResultWriter(result, 200);
                 } catch (InvalidChatNameException e) {
-                    result.put("isCreated", "false");
                     result.put("message", e.getMessage());
 
                     return new JsonResultWriter(result, 555);
@@ -209,12 +225,12 @@ public class ChatController
     }
 
     private void registerChatListGet() {
-        handleGet("/chats", handlerRegistry);
+        handleGet("/api/chats", handlerRegistry);
     }
 
     private void registerChatListPost() {
         UrlMethodPair postChatListRequest
-                = new UrlMethodPair("/chats", POST);
+                = new UrlMethodPair("/api/chats", POST);
         handlerRegistry.register(postChatListRequest, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
                     new AuthenticationTokenDto(request.getParameter("token"))

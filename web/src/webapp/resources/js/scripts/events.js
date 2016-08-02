@@ -19,8 +19,14 @@ var events = {
 
 	createRoomButtonClickedEvent: "CREATE_ROOM_BUTTON_CLICK_EVENT",
 	joinRoomButtonClickedEvent: "JOIN_ROOM_BUTTON_CLICKED_EVENT",
-	leaveRommButtonClickedEvent: "LEAVE_ROOM_BUTTON_CLICKED_EVENT"
-}
+	leaveRommButtonClickedEvent: "LEAVE_ROOM_BUTTON_CLICKED_EVENT",
+
+	chatListRequestedEvent: "CHAT_LIST_REQUESTED_EVENT",
+	chatListProvidedEvent: "CHAT_LIST_PROVIDED_EVENT",
+
+	messageListRequestedEvent: "MESSAGE_LIST_REQUESTED_EVENT",
+	messageListProvidedEvent: "MESSAGE_LIST_PROVIDED_EVENT"
+};
 
 if (typeof define !== 'function') {
     var define = require('amdefine')(module);

@@ -18,7 +18,7 @@ import static org.junit.Assert.fail;
 
 public class LoginControllerShould {
 
-    private final String baseUrl = "http://localhost:8080/login";
+    private final String baseUrl = "http://localhost:8080/api/login";
     private final HttpClient client = HttpClientBuilder.create().build();
 
     @Test
@@ -70,7 +70,7 @@ public class LoginControllerShould {
         params.add(new BasicNameValuePair("password", "123"));
         params.add(new BasicNameValuePair("passwordConfirm", "123"));
 
-        HttpResponse response = sendPost("http://localhost:8080/register", params, client);
+        HttpResponse response = sendPost("http://localhost:8080/api/register", params, client);
 
         if (response == null) {
             fail("Failed due null response.");

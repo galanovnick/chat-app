@@ -1,10 +1,9 @@
-var MessageDto = function(username, text, roomId) {
+var MessageDto = function(text, roomId) {
 	return {
-		"username": username,
 		"text": text,
-		"roomId": roomId
+		"chatId": roomId
 	}
-}
+};
 
 if (typeof define !== 'function') {
     var define = require('amdefine')(module);

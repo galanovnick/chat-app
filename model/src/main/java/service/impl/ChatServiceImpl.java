@@ -79,7 +79,7 @@ public class ChatServiceImpl implements ChatService {
         Optional<Chat> chat = chatRepository.findOne(chatId);
         if (chat.isPresent()) {
             if (!chat.get().addUser(userId)) {
-                throw new UserAlreadyInChatException();
+                throw new UserAlreadyInChatException("User already in this chat.");
             }
             return;
         }

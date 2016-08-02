@@ -1,8 +1,5 @@
 package handler;
 
-import controller.ChatController;
-import controller.LoginController;
-import controller.RegistrationController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

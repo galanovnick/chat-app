@@ -1,10 +1,10 @@
-var UserDto = function(username, password, password_r) {
+var UserDto = function(username, password, passwordConfirm) {
 	return {
 		"username": username,
 		"password": password,
-		"password_r": password_r
+		"passwordConfirm": passwordConfirm
 	}
-}
+};
 
 if (typeof define !== 'function') {
     var define = require('amdefine')(module);

@@ -13,7 +13,11 @@ public class JsonResult implements Result<String> {
     public void put(String key, String[] values) {
         StringBuilder resultString = new StringBuilder("[");
         for (String value : values) {
-            resultString.append(String.format("\"%s\",", value));
+            if (value.charAt(0) != '{') {
+                resultString.append(String.format("\"%s\",", value));
+            } else {
+                resultString.append(String.format("%s,", value));
+            }
         }
         if (resultString.length() > 1) {
             resultString.deleteCharAt(resultString.length() - 1);

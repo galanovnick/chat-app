@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 public class RegistrationControllerShould {
 
-    private final String baseUrl = "http://localhost:8080/register";
+    private final String baseUrl = "http://localhost:8080/api/register";
     private final HttpClient client = HttpClientBuilder.create().build();
 
     @Test

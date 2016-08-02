@@ -1,6 +1,5 @@
 package controller;
 
-import entity.AuthenticationToken;
 import entity.tiny.user.UserName;
 import entity.tiny.user.UserPassword;
 import handler.HandlerRegistry;
@@ -36,7 +35,7 @@ public class LoginController
     }
 
     private void registerLoginPost() {
-        UrlMethodPair postUrlMethodPair = new UrlMethodPair("/login", POST);
+        UrlMethodPair postUrlMethodPair = new UrlMethodPair("/api/login", POST);
         handlerRegistry.register(postUrlMethodPair, ((request, response) -> {
             JsonResult result = new JsonResult();
             AuthenticationTokenDto token;
@@ -51,22 +50,21 @@ public class LoginController
             }
             result.put("isAuthenticated", "true");
             result.put("token", token.getToken());
-
             return new JsonResultWriter(result, 200);
         }));
     }
 
     private void registerLoginGet() {
-        handleGet("/login", handlerRegistry);
+        handleGet("/api/login", handlerRegistry);
     }
 
     private void registerUsernameGet() {
-        handleGet("/username", handlerRegistry);
+        handleGet("/api/username", handlerRegistry);
     }
 
     private void registerUsernamePost() {
         UrlMethodPair postUsernameRequest
-                = new UrlMethodPair("/username", POST);
+                = new UrlMethodPair("/api/username", POST);
         handlerRegistry.register(postUsernameRequest, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
                     new AuthenticationTokenDto(request.getParameter("token"))
