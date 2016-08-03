@@ -49,12 +49,10 @@ var ChatService = function(_eventBus) {
 
     var _onUserLeft = function(userRoomInfo) {
         $.ajax({
-            type: "post",
-            data: {
-                token: userRoomInfo.token,
-                chatId: userRoomInfo.chatId
-            },
-            url: "/api/chat/leave",
+            type: "delete",
+            url: "/api/chat/leave?" +
+                "token=" + userRoomInfo.token +
+                "&chatId=" + userRoomInfo.chatId,
             dataType: "json",
             jsonp: false,
             success: function() {
@@ -65,11 +63,8 @@ var ChatService = function(_eventBus) {
 
     var _getAllChats = function(token) {
         $.ajax({
-            type: "post",
-            data: {
-                token: token
-            },
-            url: "/api/chats",
+            type: "get",
+            url: "/api/chat?token=" + token,
             dataType: "json",
             jsonp: false,
             success: function(response) {
@@ -104,12 +99,10 @@ var ChatService = function(_eventBus) {
 
     var _getAllMessages = function(messagesData) {
         $.ajax({
-            type: "post",
-            data: {
-                token: messagesData.token,
-                chatId: messagesData.chatId
-            },
-            url: "/api/chat/messages",
+            type: "get",
+            url: "/api/chat/messages?" +
+                "token=" + messagesData.token +
+                "&chatId=" + messagesData.chatId,
             dataType: "json",
             jsonp: false,
             success: function(response) {

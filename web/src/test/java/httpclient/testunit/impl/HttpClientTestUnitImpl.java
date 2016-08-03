@@ -2,6 +2,7 @@ package httpclient.testunit.impl;
 
 import httpclient.testunit.HttpClientTestUnit;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 
@@ -33,6 +34,18 @@ public class HttpClientTestUnitImpl implements HttpClientTestUnit {
         try {
             return new Response(request.getClient().execute(get));
         } catch (IOException e) {
+            e.printStackTrace();
+            fail("Unexpected exception.");
+        }
+        return null;
+    }
+
+    @Override
+    public Response sendDelete(Request request) {
+        HttpDelete delete = new HttpDelete(request.getUrl());
+        try {
+            return new Response(request.getClient().execute(delete));
+        } catch (Exception e) {
             e.printStackTrace();
             fail("Unexpected exception.");
         }

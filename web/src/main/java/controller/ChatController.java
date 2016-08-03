@@ -3,7 +3,7 @@ package controller;
 import entity.Message;
 import entity.tiny.chat.ChatId;
 import handler.HandlerRegistry;
-import handler.HandlerRegistryImpl;
+import handler.InMemoryHandlerRegistry;
 import handler.UrlMethodPair;
 import result.JsonResult;
 import result.JsonResultWriter;
@@ -17,13 +17,14 @@ import service.impl.dto.AuthenticationTokenDto;
 import service.impl.dto.ChatDto;
 import service.impl.dto.MessageDto;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import static controller.ControllerConstants.*;
+import static controller.HttpRequestMethod.DELETE;
+import static controller.HttpRequestMethod.GET;
 import static controller.HttpRequestMethod.POST;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 
@@ -35,34 +36,26 @@ public class ChatController
     private final ChatService chatService = ChatServiceImpl.getInstance();
     private final UserService userService = UserServiceImpl.getInstance();
 
-    private final HandlerRegistry handlerRegistry = HandlerRegistryImpl.getInstance();
+    private ChatController(HandlerRegistry handlerRegistry) {
+        registerChatListGet(handlerRegistry);
 
-    private ChatController() {
-        registerChatListPost();
-        registerChatListGet();
+        registerCreateChatPost(handlerRegistry);
+        registerCreateChatGet(handlerRegistry);
 
-        registerCreateChatPost();
-        registerCreateChatGet();
+        registerJoinUserPost(handlerRegistry);
+        registerJoinUserGet(handlerRegistry);
 
-        registerJoinUserPost();
-        registerJoinUserGet();
+        registerLeaveUserDelete(handlerRegistry);
+        registerLeaveUserGet(handlerRegistry);
 
-        registerLeaveUserPost();
-        registerLeaveUserGet();
+        registerAddMessagePost(handlerRegistry);
+        registerAddMessageGet(handlerRegistry);
 
-        registerAddMessagePost();
-        registerAddMessageGet();
-
-        registerMessagesPost();
-        registerMessagesGet();
+        registerMessagesGet(handlerRegistry);
     }
 
-    private void registerMessagesGet() {
-        handleGet("/api/chat/messages", handlerRegistry);
-    }
-
-    private void registerMessagesPost() {
-        UrlMethodPair createChatPair = new UrlMethodPair("/api/chat/messages", POST);
+    private void registerMessagesGet(HandlerRegistry handlerRegistry) {
+        UrlMethodPair createChatPair = new UrlMethodPair("/api/chat/messages", GET);
         handlerRegistry.register(createChatPair, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
                     new AuthenticationTokenDto(request.getParameter(TOKEN_PARAMETER))
@@ -89,11 +82,11 @@ public class ChatController
         }));
     }
 
-    private void registerAddMessageGet() {
+    private void registerAddMessageGet(HandlerRegistry handlerRegistry) {
         handleGet("/api/chat/add-message", handlerRegistry);
     }
 
-    private void registerAddMessagePost() {
+    private void registerAddMessagePost(HandlerRegistry handlerRegistry) {
         UrlMethodPair createChatPair = new UrlMethodPair("/api/chat/add-message", POST);
         handlerRegistry.register(createChatPair, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
@@ -127,12 +120,12 @@ public class ChatController
         }));
     }
 
-    private void registerLeaveUserGet() {
+    private void registerLeaveUserGet(HandlerRegistry handlerRegistry) {
         handleGet("/api/chat/leave", handlerRegistry);
     }
 
-    private void registerLeaveUserPost() {
-        UrlMethodPair createChatPair = new UrlMethodPair("/api/chat/leave", POST);
+    private void registerLeaveUserDelete(HandlerRegistry handlerRegistry) {
+        UrlMethodPair createChatPair = new UrlMethodPair("/api/chat/leave", DELETE);
         handlerRegistry.register(createChatPair, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
                     new AuthenticationTokenDto(request.getParameter(TOKEN_PARAMETER))
@@ -153,11 +146,11 @@ public class ChatController
         }));
     }
 
-    private void registerJoinUserGet() {
+    private void registerJoinUserGet(HandlerRegistry handlerRegistry) {
         handleGet("/api/chat/join", handlerRegistry);
     }
 
-    private void registerJoinUserPost() {
+    private void registerJoinUserPost(HandlerRegistry handlerRegistry) {
         UrlMethodPair createChatPair = new UrlMethodPair("/api/chat/join", POST);
         handlerRegistry.register(createChatPair, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
@@ -187,11 +180,11 @@ public class ChatController
         }));
     }
 
-    private void registerCreateChatGet() {
+    private void registerCreateChatGet(HandlerRegistry handlerRegistry) {
         handleGet("/api/chat/new", handlerRegistry);
     }
 
-    private void registerCreateChatPost() {
+    private void registerCreateChatPost(HandlerRegistry handlerRegistry) {
         UrlMethodPair createChatPair = new UrlMethodPair("/api/chat/new", POST);
         handlerRegistry.register(createChatPair, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
@@ -225,13 +218,9 @@ public class ChatController
         }));
     }
 
-    private void registerChatListGet() {
-        handleGet("/api/chats", handlerRegistry);
-    }
-
-    private void registerChatListPost() {
+    private void registerChatListGet(HandlerRegistry handlerRegistry) {
         UrlMethodPair postChatListRequest
-                = new UrlMethodPair("/api/chats", POST);
+                = new UrlMethodPair("/api/chat", GET);
         handlerRegistry.register(postChatListRequest, ((request, response) -> {
             Optional<AuthenticationTokenDto> token = userService.checkAuthentication(
                     new AuthenticationTokenDto(request.getParameter(TOKEN_PARAMETER))
@@ -256,10 +245,9 @@ public class ChatController
         }));
     }
 
-    public static ChatController getInstance() {
+    public static void instantiate(HandlerRegistry handlerRegistry) {
         if (instance == null) {
-            return instance = new ChatController();
+            instance = new ChatController(handlerRegistry);
         }
-        return instance;
     }
 }

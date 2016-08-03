@@ -7,4 +7,5 @@ public interface HttpClientTestUnit {
 
     Response sendPost(Request request);
     Response sendGet(Request request);
+    Response sendDelete(Request request);
 }

@@ -3,7 +3,7 @@ package controller;
 import entity.tiny.user.UserName;
 import entity.tiny.user.UserPassword;
 import handler.HandlerRegistry;
-import handler.HandlerRegistryImpl;
+import handler.InMemoryHandlerRegistry;
 import handler.UrlMethodPair;
 import result.JsonResult;
 import result.JsonResultWriter;
@@ -25,17 +25,15 @@ public class LoginController
 
     private final UserService userService = UserServiceImpl.getInstance();
 
-    private final HandlerRegistry handlerRegistry = HandlerRegistryImpl.getInstance();
+    private LoginController(HandlerRegistry handlerRegistry) {
+        registerLoginGet(handlerRegistry);
+        registerLoginPost(handlerRegistry);
 
-    private LoginController() {
-        registerLoginGet();
-        registerLoginPost();
-
-        registerUsernamePost();
-        registerUsernameGet();
+        registerUsernamePost(handlerRegistry);
+        registerUsernameGet(handlerRegistry);
     }
 
-    private void registerLoginPost() {
+    private void registerLoginPost(HandlerRegistry handlerRegistry) {
         UrlMethodPair postUrlMethodPair = new UrlMethodPair("/api/login", POST);
         handlerRegistry.register(postUrlMethodPair, ((request, response) -> {
             JsonResult result = new JsonResult();
@@ -53,15 +51,15 @@ public class LoginController
         }));
     }
 
-    private void registerLoginGet() {
+    private void registerLoginGet(HandlerRegistry handlerRegistry) {
         handleGet("/api/login", handlerRegistry);
     }
 
-    private void registerUsernameGet() {
+    private void registerUsernameGet(HandlerRegistry handlerRegistry) {
         handleGet("/api/username", handlerRegistry);
     }
 
-    private void registerUsernamePost() {
+    private void registerUsernamePost(HandlerRegistry handlerRegistry) {
         UrlMethodPair postUsernameRequest
                 = new UrlMethodPair("/api/username", POST);
         handlerRegistry.register(postUsernameRequest, ((request, response) -> {
@@ -81,10 +79,9 @@ public class LoginController
         }));
     }
 
-    public static LoginController getInstance() {
+    public static void instantiate(HandlerRegistry handlerRegistry) {
         if (instance == null) {
-            return instance = new LoginController();
+            instance = new LoginController(handlerRegistry);
         }
-        return instance;
     }
 }

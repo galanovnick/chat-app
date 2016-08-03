@@ -3,7 +3,6 @@ package controller;
 import entity.tiny.user.UserName;
 import entity.tiny.user.UserPassword;
 import handler.HandlerRegistry;
-import handler.HandlerRegistryImpl;
 import handler.UrlMethodPair;
 import result.JsonResult;
 import result.JsonResultWriter;
@@ -23,14 +22,12 @@ public class RegistrationController
 
     private final UserService userService = UserServiceImpl.getInstance();
 
-    private final HandlerRegistry handlerRegistry = HandlerRegistryImpl.getInstance();
-
-    private RegistrationController() {
-        registerRegistrationGet();
-        registerRegistrationPost();
+    private RegistrationController(HandlerRegistry handlerRegistry) {
+        registerRegistrationGet(handlerRegistry);
+        registerRegistrationPost(handlerRegistry);
     }
 
-    private void registerRegistrationPost() {
+    private void registerRegistrationPost(HandlerRegistry handlerRegistry) {
         UrlMethodPair postUrlMethodPair = new UrlMethodPair("/api/register", POST);
 
         handlerRegistry.register(postUrlMethodPair, ((request, response) -> {
@@ -53,13 +50,12 @@ public class RegistrationController
             return new JsonResultWriter(result, 200);
         }));
     }
-    private void registerRegistrationGet() {
+    private void registerRegistrationGet(HandlerRegistry handlerRegistry) {
         handleGet("/api/register", handlerRegistry);
     }
-    public static RegistrationController getInstance() {
+    public static void instantiate(HandlerRegistry handlerRegistry) {
         if (instance == null) {
-            return instance = new RegistrationController();
+            instance = new RegistrationController(handlerRegistry);
         }
-        return instance;
     }
 }

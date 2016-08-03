@@ -89,6 +89,7 @@ public class Response {
         }
         return this;
     }
+
     public String getProperty(String propertyName) {
         isJson();
         hasProperty(propertyName);

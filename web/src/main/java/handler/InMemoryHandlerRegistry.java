@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class HandlerRegistryImpl implements HandlerRegistry {
+public class InMemoryHandlerRegistry implements HandlerRegistry {
 
     private final Logger log = LoggerFactory.getLogger(HandlerRegistry.class);
 
@@ -34,12 +34,12 @@ public class HandlerRegistryImpl implements HandlerRegistry {
         }
     }
 
-    private HandlerRegistryImpl(){
+    private InMemoryHandlerRegistry(){
     }
 
     public static HandlerRegistry getInstance() {
         if (instance == null) {
-            return instance = new HandlerRegistryImpl();
+            return instance = new InMemoryHandlerRegistry();
         }
         return instance;
     }

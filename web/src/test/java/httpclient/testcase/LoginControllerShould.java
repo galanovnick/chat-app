@@ -4,7 +4,6 @@ import httpclient.testunit.HttpClientTestUnit;
 import httpclient.testunit.impl.HttpClientTestUnitImpl;
 import httpclient.testunit.impl.Request;
 import httpclient.testunit.impl.Response;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -33,8 +32,7 @@ public class LoginControllerShould {
         Response response = testUnit.sendPost(new Request(params, baseUrl, client));
         response
             .isStatusCodeEquals(555)
-            .isJson()
-                .hasProperty("message", "Invalid username or password.");
+            .hasProperty("message", "Invalid username or password.");
     }
 
     @Test
@@ -46,8 +44,7 @@ public class LoginControllerShould {
         Response response = testUnit.sendPost(new Request(params, baseUrl, client));
         response
             .isStatusCodeEquals(555)
-            .isJson()
-                .hasProperty("message", "Fields cannot be empty.");
+            .hasProperty("message", "Fields cannot be empty.");
     }
 
     @Test
@@ -62,8 +59,7 @@ public class LoginControllerShould {
                 "http://localhost:8080/api/register", client));
         regUserResponse
             .isStatusCodeEquals(SC_OK)
-            .isJson()
-                .hasProperty("message", "User has been successfully registered.");
+            .hasProperty("message", "User has been successfully registered.");
 
 
         params.clear();

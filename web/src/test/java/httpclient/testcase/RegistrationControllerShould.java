@@ -33,8 +33,7 @@ public class RegistrationControllerShould {
         Response response = testUnit.sendPost(new Request(params, baseUrl, client));
         response
             .isStatusCodeEquals(SC_OK)
-            .isJson()
-                .hasProperty("message", "User has been successfully registered.");
+            .hasProperty("message", "User has been successfully registered.");
 
     }
 
@@ -48,7 +47,6 @@ public class RegistrationControllerShould {
         Response response = testUnit.sendPost(new Request(params, baseUrl, client));
         response
             .isStatusCodeEquals(555)
-            .isJson()
             .hasProperty("message", "Passwords do not match.");
     }
 
@@ -62,8 +60,7 @@ public class RegistrationControllerShould {
         Response response = testUnit.sendPost(new Request(params, baseUrl, client));
         response
             .isStatusCodeEquals(555)
-            .isJson()
-                .hasProperty("message", "Fields cannot be empty.");
+            .hasProperty("message", "Fields cannot be empty.");
     }
 
     @Test
@@ -78,7 +75,6 @@ public class RegistrationControllerShould {
         Response response = testUnit.sendPost(new Request(params, baseUrl, client));
         response
             .isStatusCodeEquals(555)
-            .isJson()
-                .hasProperty("message", "User with such name already exists.");
+            .hasProperty("message", "User with such name already exists.");
     }
 }

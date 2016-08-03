@@ -3,7 +3,7 @@ package controller;
 public enum HttpRequestMethod {
     GET("GET"),
     POST("POST"),
-    UPDATE("UPDATE"),
+    PUT("PUT"),
     DELETE("DELETE");
 
     private final String method;
